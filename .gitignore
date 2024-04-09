@@ -1,8 +1,7 @@
 # Ignore compiled Python bytecode files
 # *.pyc
-/test.py
-/readme.txt
-/readme.md
+test.py
+readme.md
 
 # Ignore Python cache directories
 __pycache__/
