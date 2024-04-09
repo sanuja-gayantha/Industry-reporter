@@ -1,7 +1,7 @@
 # Ignore compiled Python bytecode files
 # *.pyc
 /test.py
-/text.txt
+/readme.txt
 
 # Ignore Python cache directories
 __pycache__/
