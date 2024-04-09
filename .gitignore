@@ -1,13 +1,9 @@
-# Ignore compiled Python bytecode files
-# *.pyc
-/test.py
-/readme.txt
 
-# Ignore Python cache directories
-__pycache__/
-# Ignore environment-specific settings
-.env
-# Ignore editor-specific files
-.vscode/
-.idea/
-*.sublime-*
+# # Ignore Python cache directories
+# __pycache__/
+# # Ignore environment-specific settings
+# .env
+# # Ignore editor-specific files
+# .vscode/
+# .idea/
+# *.sublime-*
