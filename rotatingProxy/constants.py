@@ -1,6 +1,6 @@
 # Developed by @sanuja : https://github.com/sanuja-gayantha
 
-Proxies_located_url = 'https://www.socks-proxy.net/'
-# Ip_checking_url = 'https://ipinfo.io/json'
-Ip_checking_url = 'https://httpbin.org/ip'
-Connections = 100
+PROXIEX_LOCATED_URL = 'https://www.socks-proxy.net/'
+# IP_CHECKING_URL = 'https://ipinfo.io/json'
+IP_CHECKING_URL = 'https://httpbin.org/ip'
+CONNECTIONS = 100

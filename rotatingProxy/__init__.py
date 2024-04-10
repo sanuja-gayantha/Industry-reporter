@@ -3,4 +3,3 @@
 print("rotating_proxy __init__")
 __all__ = ["constants", "rotatingProxy"]
 
-from .rotatingProxy import rotating_proxy

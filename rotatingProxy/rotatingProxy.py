@@ -4,17 +4,16 @@ import requests
 from bs4 import BeautifulSoup as soup
 import concurrent.futures
 import json
-import pprint
 
-from .constants import Proxies_located_url, Ip_checking_url, Connections
+from .constants import PROXIEX_LOCATED_URL, IP_CHECKING_URL, CONNECTIONS
 
 
-class rotatingProxy():
+class RotatingProxy():
     
     def __init__(self, proxies_located_url, ip_checking_url):
 
-        self.proxies_located_url= proxies_located_url
-        self.ip_checking_url= ip_checking_url
+        self.proxies_located_url = proxies_located_url
+        self.ip_checking_url = ip_checking_url
         self.proxies = []
 
 
@@ -62,13 +61,12 @@ class rotatingProxy():
 
 
 
-def rotating_proxy():
-    ins = rotatingProxy(Proxies_located_url, Ip_checking_url)
+def rotating_proxy_main():
+    ins = RotatingProxy(PROXIEX_LOCATED_URL, IP_CHECKING_URL)
     ins.get_proxies_from_web()
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=Connections) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
         results = executor.map(ins.extract_valid_proxy, ins.proxies)
-
 
     ins.generate_json(results)
 
