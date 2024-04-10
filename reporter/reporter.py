@@ -28,7 +28,7 @@ class Reporter(webdriver.Chrome):
 
 
     def scrape_website_urls(self):
-        # Navigate to home page
+        # Navigate to home page (use proxy IP's)
         # Check if there is sitemap or not
             # 1. Navigate to sitemap
             # 2. Nf not pass
