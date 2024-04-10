@@ -14,8 +14,8 @@ from .constants import BASE_URL
 class Reporter(webdriver.Chrome):
 
     def __init__(self, answer, tear_down=False):
-        # options = webdriver.ChromeOptions()
-        # super(Reporter, self).__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
+        options = webdriver.ChromeOptions()
+        super(Reporter, self).__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
 
         self.tear_down = tear_down
         self.domains_path = os.path.join(os.getcwd(), 'Domains.json')
