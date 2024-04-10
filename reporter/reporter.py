@@ -13,11 +13,13 @@ from .constants import BASE_URL
 
 class Reporter(webdriver.Chrome):
 
-    def __init__(self, tear_down=False):
+    def __init__(self, answer, tear_down=False):
         # options = webdriver.ChromeOptions()
         # super(Reporter, self).__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
 
         self.tear_down = tear_down
+        self.domains_path = os.path.join(os.getcwd(), 'Domains.json')
+        self.answer = answer
         self.domains = []
         
     def __enter__(self):
@@ -28,7 +30,19 @@ class Reporter(webdriver.Chrome):
         if self.tear_down:
             self.quit()
 
+
+    def read_json_file(self, path):
+        with open(path) as json_file:
+            domains = json.load(json_file)
+            return domains
+
+
+    def write_to_json_file(self, path, payload):
+        with open(path, 'w') as file:
+            json.dump(payload, file, sindent=4)
+        return
     
+
     def get_domains(self):
         # Call Api for to get domains <-- write Api !!
 
@@ -39,21 +53,18 @@ class Reporter(webdriver.Chrome):
         # domain_list will be replaced in future!!!
         domain_list =[{"name" : "https://www.bain.com/", "status" : True, },{"name" : "https://kalaari.com/", "rollno" : True, }]      
         
-        # with open('Domains.json', 'w') as file:
-        #     json.dump(domain_list, file, sindent=4)
-
         # Read filtered domains
-        with open(os.path.join('', Domains.json)) as json_file:
-            self.domains = json.load(json_file)
-
+        self.domains = self.read_json_file(self.domains_path)
         return
 
+
+
     def scrape_website_urls(self):
-        # Question : Is this a brand new scraping?
-        # Call Api for to get domains <-- write Api !!
-        # Then bsed on Question do following
-            # 1. If yes delete Links.json & Pdfs.json & rewrite Domains.json, this will start the process from the beginning
-            # 2. If not call the last domain, continue <-- If something went wrong, this willl help
+
+        # Get valid domains from get_domains function
+        self.get_domains()
+        print(self.domains)
+
         # Navigate to home page (use proxy IP's)
         # Check if there is sitemap or not
             # 1. Navigate to sitemap & collect all href links
@@ -67,18 +78,36 @@ class Reporter(webdriver.Chrome):
             # 3. Repeat navigation process until count of new links existance equal to zero
 
 
-        print(self.domains)
-        
 
 
 
 
+
+
+# Question : Is this a brand new scraping? 
+def questions():
+    print("Is this a brand new scraping?\n Type 'y' to yes... \n Type 'n'... to no \n Type 'exit' to quit..")
+    while True:
+        command = input("> ")
+        if command == "exit":
+            break
+        if command == "y":
+            return [True, "y"]
+        if command == "n":
+            return [True, "n"]
+        try:
+            print(eval(command))
+        except Exception as e:
+            # print(f"Exception: {str(e)}")
+            print("[*] Input is not valid. Try again...")
 
 
 def reporter_main():
-    with Reporter(tear_down=False) as manager:
-        manager.scrape_website_urls()
-        # print('Exiting...')
+    answer = questions()
+    if answer[0]:
+        with Reporter(answer=answer[1]) as manager:
+            manager.scrape_website_urls()
+            # print('Exiting...')
 
 
 
