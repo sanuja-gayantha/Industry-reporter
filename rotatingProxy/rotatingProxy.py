@@ -4,8 +4,9 @@ import requests
 from bs4 import BeautifulSoup as soup
 import concurrent.futures
 import json
+import pprint
 
-from constants import Proxies_located_url, Ip_checking_url, Connections
+from .constants import Proxies_located_url, Ip_checking_url, Connections
 
 
 class rotatingProxy():
@@ -31,6 +32,7 @@ class rotatingProxy():
             # proxy address
             proxy = 'socks4://'+ ':'.join([cols[0],cols[1]])
             self.proxies.append(proxy)
+            print(proxy)
 
 
     # Find working/valid IP's
@@ -54,14 +56,21 @@ class rotatingProxy():
             temp_results.append(result)
 
         with open('proxyList.json', 'w') as file:
-            json.dump(temp_results, file)
+            json.dump(temp_results, file, indent=4)
+
+        with open("proxyList.json", "r") as read_file:
+            student = json.load(read_file)
+            json.dumps(student, indent=4, separators=(',', ': '), sort_keys=True)
 
 
+def rotating_proxy():
+    ins = rotatingProxy(Proxies_located_url, Ip_checking_url)
+    ins.get_proxies_from_web()
 
-ins = rotatingProxy(Proxies_located_url, Ip_checking_url)
-ins.get_proxies_from_web()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=Connections) as executor:
+        results = executor.map(ins.extract_valid_proxy, ins.proxies)
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=Connections) as executor:
-    results = executor.map(ins.extract_valid_proxy, ins.proxies)
+    ins.generate_json(results)
 
-ins.generate_json(results)
+
+    
