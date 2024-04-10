@@ -32,35 +32,34 @@ class rotatingProxy():
             # proxy address
             proxy = 'socks4://'+ ':'.join([cols[0],cols[1]])
             self.proxies.append(proxy)
-            print(proxy)
+            # print(proxy)
 
 
     # Find working/valid IP's
     def extract_valid_proxy(self, proxy):
         try:
             response = requests.get(self.ip_checking_url, 
-                                        proxies={"http": proxy, "https": proxy}, timeout=3)
-            # print(response.json())
+                                        proxies={"http": proxy, "https": proxy}, timeout=5)
+            # print(response.status_code, response.json())
+            return proxy
 
         except Exception as e:
+            return ""
             pass
 
-        return proxy
-
-
+        
     # Store them in .json file for futher use
     def generate_json(self, results):
 
         temp_results=[]
         for result in results:
-            temp_results.append(result)
+            if result != "":
+                print(result)
+                temp_results.append(result)
 
         with open('proxyList.json', 'w') as file:
             json.dump(temp_results, file, indent=4)
 
-        with open("proxyList.json", "r") as read_file:
-            student = json.load(read_file)
-            json.dumps(student, indent=4, separators=(',', ': '), sort_keys=True)
 
 
 def rotating_proxy():
@@ -69,6 +68,7 @@ def rotating_proxy():
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=Connections) as executor:
         results = executor.map(ins.extract_valid_proxy, ins.proxies)
+
 
     ins.generate_json(results)
 
