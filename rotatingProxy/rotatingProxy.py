@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup as soup
 import concurrent.futures
 import json
+import os
 
 from .constants import PROXIEX_LOCATED_URL, IP_CHECKING_URL, CONNECTIONS
 
@@ -15,6 +16,13 @@ class RotatingProxy():
         self.proxies_located_url = proxies_located_url
         self.ip_checking_url = ip_checking_url
         self.proxies = []
+        self.headers = self.read_json_file(os.path.join(os.getcwd(), 'Headers.json'))
+
+
+    def read_json_file(self, path):
+        with open(path) as json_file:
+            result = json.load(json_file)
+            return result
 
 
     # Find proxies IP's from web & Scrape them
@@ -38,8 +46,8 @@ class RotatingProxy():
     def extract_valid_proxy(self, proxy):
         try:
             response = requests.get(self.ip_checking_url, 
+                                        headers=self.headers,
                                         proxies={"http": proxy, "https": proxy}, timeout=5)
-            # print(response.status_code, response.json())
             return proxy
 
         except Exception as e:

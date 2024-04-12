@@ -3,32 +3,42 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+
+import requests
+from bs4 import BeautifulSoup
 
 import time
 import json
 import os
 
-from .constants import BASE_URL
+from .constants import BASE_URL, IP_CHECKING_URL
 
 
 class Reporter(webdriver.Chrome):
 
-    def __init__(self, answer, tear_down=False):
+    def __init__(self, answer, headless=True):
+
+        self.headless = headless
         options = webdriver.ChromeOptions()
+        if self.headless:
+            options.add_argument("--headless=new")
         super(Reporter, self).__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
 
-        self.tear_down = tear_down
-        self.domains_path = os.path.join(os.getcwd(), 'Domains.json')
         self.answer = answer
-        self.domains = []
+        self.domains:list
+        self.domains_path = os.path.join(os.getcwd(), 'Domains.json')
+        self.implicitly_wait(15)
         
     def __enter__(self):
         return self
 
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        if self.tear_down:
-            self.quit()
+        self.quit()
 
 
     def read_json_file(self, path):
@@ -39,7 +49,7 @@ class Reporter(webdriver.Chrome):
 
     def write_to_json_file(self, path, payload):
         with open(path, 'w') as file:
-            json.dump(payload, file, sindent=4)
+            json.dump(payload, file, indent=4)
         return
     
 
@@ -77,11 +87,13 @@ class Reporter(webdriver.Chrome):
                     # <-- For now only do .pdf link filtering..
             # 3. Repeat navigation process until count of new links existance equal to zero
 
+        self.get("https://www.nddb.coop/services/animalnutrition/cattlefeed/quality-mark")
+        
+        soup = BeautifulSoup(self.page_source, 'html.parser')
+        for link in soup.find_all('a'):
+            print(link.get('href'))
 
-
-
-
-
+            
 
 
 # Question : Is this a brand new scraping? 
@@ -105,7 +117,7 @@ def questions():
 def reporter_main():
     answer = questions()
     if answer[0]:
-        with Reporter(answer=answer[1]) as manager:
+        with Reporter(answer=answer[1], headless=False) as manager:
             manager.scrape_website_urls()
             # print('Exiting...')
 

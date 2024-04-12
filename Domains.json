@@ -1,10 +1,7 @@
 [
     {
-        "name": "https://www.bain.com/",
+        "name": "https://www.nddb.coop",
         "status": true
-    },
-    {
-        "name": "https://kalaari.com/",
-        "rollno": true
     }
+    
 ]
