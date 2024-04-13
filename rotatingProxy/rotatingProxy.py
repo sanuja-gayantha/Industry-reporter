@@ -57,7 +57,7 @@ class RotatingProxy():
 
         # Sends 5 requests at once to same domain url
         for count, random_proxies_list_element in enumerate(random_proxies_list):
-            with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
                 results = executor.map(self.domain_response, random_proxies_list[count])
                 
             get_out=False
