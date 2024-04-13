@@ -1,13 +1,5 @@
 [
     [
-        "valid_url_https",
-        "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs"
-    ],
-    [
-        "valid_url_https",
-        "https://www.nddb.coop/hi/services/animalbreeding/geneticimprovement/sireproofs"
-    ],
-    [
         "valid_pdf",
         [
             "2024-04-13",
@@ -152,10 +144,6 @@
         ]
     ],
     [
-        "valid_url_https",
-        "http://qualitymark.nddb.coop/"
-    ],
-    [
         "valid_pdf",
         [
             "2024-04-13",
@@ -166,14 +154,6 @@
             "https://www.nddb.coop/sites/default/files/pdfs/QM_Application_User_Manual.pdf",
             "QM_Application_User_Manual"
         ]
-    ],
-    [
-        "valid_url_https",
-        "http://www.nddb.coop/ccnddb"
-    ],
-    [
-        "valid_url_https",
-        "https://www.nddb.coop/ndpi/"
     ],
     [
         "valid_pdf",

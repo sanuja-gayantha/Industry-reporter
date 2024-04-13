@@ -266,7 +266,7 @@ class Spyder():
                                             url_list.append(value_v)
                                             # print(value_v)
 
-                                    elif validate[0]=="valid_url_https":
+                                    elif validate[0]=="valid_url_http":
                                         updated_url=validate[1]
                                         value_v=self.list_filter(updated_url, url_list)
                                         if value_v!="":
@@ -275,7 +275,7 @@ class Spyder():
                                             
                                     # return pdf data 
                                     elif validate[0]=="valid_pdf":
-                                        # print(validate)
+                                        print(validate)
                                         # If pdf url not exist add it to json_pdf_urls_list
                                         if os.path.exists(self.pdf_urls_list_path):
                                             read_json_pdf_urls=self.read_json_file(self.pdf_urls_list_path)
