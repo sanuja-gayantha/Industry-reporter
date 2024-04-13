@@ -199,8 +199,7 @@ class Spyder():
             condition=True
             url_list=[]
             json_list=[]
-            # url_list.append(domain["name"]+"/sitemap")
-            url_list.append(self.domain["name"])
+            url_list.append(domain["name"]+"/sitemap")
 
             # For every new domain call rotating_proxy_main() function to get new proxies list
             # self.Initialize_proxy_ist()
@@ -264,7 +263,7 @@ class Spyder():
                                             
                                     # return pdf link (report links, fetch date, document title, and website domain/company.)
                                     else:
-                                        print(validate)
+                                        # print(validate)
                                         pass
 
                             
@@ -274,7 +273,7 @@ class Spyder():
 
                     # print(url_list)
                     idx+=1
-                    if idx==1:
+                    if idx==5:
                         break
 
                 
