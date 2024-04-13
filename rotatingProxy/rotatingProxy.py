@@ -16,7 +16,7 @@ class RotatingProxy():
         self.proxies_located_url = proxies_located_url
         self.ip_checking_url = ip_checking_url
         self.proxies = []
-        self.headers = self.read_json_file(os.path.join(os.getcwd(), 'Headers.json'))
+        self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
 
 
     def read_json_file(self, path):

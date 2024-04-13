@@ -26,9 +26,9 @@ class Spyder():
         self.proxies_list:list
         self.current_domain_url:str
         self.proxy_timeout = 4
-        self.headers = self.read_json_file(os.path.join(os.getcwd(), 'Headers.json'))
+        self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
 
-        self.domains_path = os.path.join(os.getcwd(), 'Domains.json')
+        self.domains_path = os.path.join(os.getcwd(), 'domains.json')
         self.proxies_path = os.path.join(os.getcwd(), 'proxyList.json')
         self.urls_list_path = os.path.join(os.getcwd(), 'urlsList.json')
 
