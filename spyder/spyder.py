@@ -262,11 +262,25 @@ class Spyder():
                                             url_list.append(value_v)
                                             # print(value_v)
                                             
-                                    # return pdf link (report links, fetch date, document title, and website domain/company.)
+                                    # return pdf data 
                                     else:
                                         print(validate)
-                                        pass
+                                        # Read google sheet data , Check .pdf already uploaded or not
+                                            # If No: 
+                                                # 1. Download .pdf and Upload it to drive
+                                                # 2. Update google sheet [report links (drive link and web url), fetch date, document title, and website domain/company.]
 
+                                            # Yes:pass
+
+                                        
+
+
+
+
+
+
+
+                                        
                             
                         
                         # 2. If page have frams or iframes...
