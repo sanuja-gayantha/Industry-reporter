@@ -1,6 +1,6 @@
 # Ignore compiled Python bytecode files
 # *.pyc
-./proxyList.json
+.proxyList.json
 
 # Ignore Python cache directories
 __pycache__/
