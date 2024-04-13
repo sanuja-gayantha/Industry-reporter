@@ -297,6 +297,8 @@ class Spyder():
                                                     # 1. Download .pdf and Upload it to drive
                                                     # 2. Update google sheet [report links (drive link and web url), fetch date, document title, and website domain/company.]
 
+                                            
+
                            
 
 
