@@ -1,7 +1,6 @@
 # Ignore compiled Python bytecode files
 # *.pyc
-test.py
-readme.md
+./proxyList.json
 
 # Ignore Python cache directories
 __pycache__/
