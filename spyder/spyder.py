@@ -13,7 +13,7 @@ import re
 from datetime import date
 
 from rotatingProxy.rotatingProxy import *
-from .constants import IP_CHECKING_URL, CONNECTIONS
+from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY
 
 
 class Spyder():
@@ -35,6 +35,7 @@ class Spyder():
         # temperary
         self.Initialize_proxy_ist()
 
+
     def read_json_file(self, path):
         with open(path) as json_file:
             result = json.load(json_file)
@@ -45,6 +46,7 @@ class Spyder():
         with open(path, 'w') as file:
             json.dump(payload, file, indent=4)
         return
+
 
 
     def Initialize_proxy_ist(self):
@@ -196,22 +198,44 @@ class Spyder():
             self.domain=domain
             condition=True
             url_list=[]
-            url_list.append(domain["name"])
+            json_list=[]
+            url_list.append(domain["name"]+"/sitemap")
 
             # For every new domain call rotating_proxy_main() function to get new proxies list
             # self.Initialize_proxy_ist()
             
             while condition:
+                idx=0
                 for count, url in enumerate(url_list):
                     if count == len(url_list):
                         break
 
                     self.current_domain_url=url
 
-                    response = self.get_valid_proxy_domain_response()
-                    # print(response.status_code, response.json())
+                    for _ in range(RESPONSE_ITERATIONS_PROXY):
+                        response = self.get_valid_proxy_domain_response()
+                        if response!="":
+                            break
+
+                    if response=="" and self.current_domain_url==(domain["name"]+"/sitemap"):
+                        self.current_domain_url=self.domain
+                        if self.list_filter(domain["name"]+"/sitemap", url_list)=="":
+                            url_list.remove(domain["name"]+"/sitemap")
+                        continue
+                        print("Sitemap not found!!")
+
+                    # if response=="":
+                    #     if self.list_filter(self.current_domain_url, url_list)=="":
+                    #         url_list.remove(self.current_domain_url)
+                    #     continue
 
                     if response!="":
+                        print(self.current_domain_url)
+
+                        # Add url to urlsList.json
+                        json_list.append(self.current_domain_url)
+                        self.write_to_json_file(self.urls_list_path, json_list)
+
                         # Extract urls
                         # 1.Normal page
                         soup = BeautifulSoup(response.text, 'html.parser')
@@ -228,14 +252,14 @@ class Spyder():
                                         value_v=self.list_filter(updated_url, url_list)
                                         if value_v!="":
                                             url_list.append(value_v)
-                                            print(value_v)
+                                            # print(value_v)
 
                                     elif validate[0]=="valid_url_http":
                                         updated_url=validate[1]
                                         value_v=self.list_filter(updated_url, url_list)
                                         if value_v!="":
                                             url_list.append(value_v)
-                                            print(value_v)
+                                            # print(value_v)
                                             
                                     # return pdf link (report links, fetch date, document title, and website domain/company.)
                                     else:
@@ -247,7 +271,10 @@ class Spyder():
                         # 2. If page have frams or iframes...
                         # .................................
 
-                    self.write_to_json_file(self.urls_list_path, url_list)
+                    # print(url_list)
+                    idx+=1
+                    if idx==5:
+                        break
 
                 
                 condition=False

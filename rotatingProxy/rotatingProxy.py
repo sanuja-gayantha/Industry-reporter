@@ -67,9 +67,14 @@ class RotatingProxy():
         with open('proxyList.json', 'w') as file:
             json.dump(temp_results, file, indent=4)
 
+        if len(temp_results)<25:
+            self.rotating_proxy_main()
+
 
 
 def rotating_proxy_main():
+    print("[*] Searching new proxies...")
+    
     ins = RotatingProxy(PROXIEX_LOCATED_URL, IP_CHECKING_URL)
     ins.get_proxies_from_web()
 

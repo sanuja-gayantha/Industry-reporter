@@ -137,10 +137,26 @@
 # # print(*pdfs, sep="\n")
 
 
-a = ["1","2","3","5"]
-b = "4"
-filtered = filter(lambda x: x == b, a)
-if list(filtered):
-    print("exists in the list")
-else:
-    print("does not exist in the list")
+# a = ["1","2","3","5"]
+# b = "4"
+# filtered = filter(lambda x: x == b, a)
+# if list(filtered):
+#     print("exists in the list")
+# else:
+#     print("does not exist in the list")
+# import os
+# import json
+# path=os.path.join(os.getcwd(), 'urlsList.json')
+
+# # try:
+# #     with open(path) as json_file:
+# #         result = json.load(json_file)
+# #         print(result)
+# # except Exception as e:
+# #     print(e)
+
+# isExist = os.path.exists(path) 
+# print(not isExist) 
+
+for i in range(3):
+    print(i)
