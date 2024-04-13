@@ -12,8 +12,10 @@ import random
 import re
 from datetime import date
 
+
 from rotatingProxy.rotatingProxy import *
 from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY
+
 
 
 class Spyder():
@@ -31,6 +33,7 @@ class Spyder():
         self.domains_path = os.path.join(os.getcwd(), 'domains.json')
         self.proxies_path = os.path.join(os.getcwd(), 'proxyList.json')
         self.urls_list_path = os.path.join(os.getcwd(), 'urlsList.json')
+        self.pdf_list_path = os.path.join(os.getcwd(), 'pdfsList.json')
 
         # temperary
         self.Initialize_proxy_ist()
@@ -44,9 +47,8 @@ class Spyder():
 
     def write_to_json_file(self, path, payload):
         with open(path, 'w') as file:
-            json.dump(payload, file, indent=4)
+            json.dump(payload, file, indent=4, default=str)
         return
-
 
 
     def Initialize_proxy_ist(self):
@@ -194,11 +196,13 @@ class Spyder():
 
         
         # url="https://www.nddb.coop/services/animalnutrition/cattlefeed/quality-mark"
+        json_url_list=[]
+        json_pdf_list=[]
         for domain in self.domains:
             self.domain=domain
             condition=True
             url_list=[]
-            json_list=[]
+
             # url_list.append(domain["name"]+"/sitemap")
             url_list.append(self.domain["name"])
 
@@ -234,18 +238,25 @@ class Spyder():
                         print(self.current_domain_url)
 
                         # Add url to urlsList.json
-                        json_list.append(self.current_domain_url)
-                        self.write_to_json_file(self.urls_list_path, json_list)
+                        json_url_list.append(self.current_domain_url)
+                        self.write_to_json_file(self.urls_list_path, json_url_list)
 
                         # Extract urls
                         # 1.Normal page
                         soup = BeautifulSoup(response.text, 'html.parser')
 
+                        temp_links=[]
                         for link in soup.find_all('a'):
                             unfiltered_href_link=link.get('href')
-                            
-                            if unfiltered_href_link is not None:
-                                validate=self.validate_url(unfiltered_href_link)
+                            temp_links.append(unfiltered_href_link)
+
+                        # drop duplicates in temp_links
+                        unfiltered_links_list=[]
+                        [unfiltered_links_list.append(x) for x in temp_links if x not in unfiltered_links_list]
+                        
+                        for unfiltered_link in unfiltered_links_list:
+                            if unfiltered_link is not None:
+                                validate=self.validate_url(unfiltered_link)
                                 if validate[0] != "invalid":
                                     if validate[0]=="valid_url_normal":
                                         updated_url=validate[1]
@@ -264,7 +275,12 @@ class Spyder():
                                             
                                     # return pdf data 
                                     else:
-                                        print(validate)
+                                        # print(validate)
+                                        # write pdf data to pdfList.json file 
+                                        json_pdf_list.append(validate)
+                                        self.write_to_json_file(self.pdf_list_path, json_pdf_list)
+                        
+
                                         # Read google sheet data , Check .pdf already uploaded or not
                                             # If No: 
                                                 # 1. Download .pdf and Upload it to drive
@@ -272,7 +288,10 @@ class Spyder():
 
                                             # Yes:pass
 
-                                        
+
+
+
+
 
 
 

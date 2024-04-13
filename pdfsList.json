@@ -1,0 +1,274 @@
+[
+    [
+        "valid_url_https",
+        "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs"
+    ],
+    [
+        "valid_url_https",
+        "https://www.nddb.coop/hi/services/animalbreeding/geneticimprovement/sireproofs"
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "http://www.nddb.coop/sites/default/files/Explanation-of-published-breeding-value.pdf",
+            "Explanation-of-published-breeding-value"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_APLDA_Jersey_CB_cattle_Dec_2021.pdf",
+            "BV_and_SSCR_APLDA_Jersey_CB_cattle_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_BNS_Mehsana_Buffalo_Dec_2021.pdf",
+            "BV_and_SSCR_BNS_Mehsana_Buffalo_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_SAG_HFCB_cattle_Dec_2021.pdf",
+            "BV_and_SSCR_SAG_HFCB_cattle_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_KMF_HF_cattle_Dec_19.pdf",
+            "BV_and_SSCR_KMF_HF_cattle_Dec_19"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_MSN_Mehsana_Buffalo_Dec_2021.pdf",
+            "BV_and_SSCR_MSN_Mehsana_Buffalo_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_SAG_Murrah_Buffalo_Dec_2021.pdf",
+            "BV_and_SSCR_SAG_Murrah_Buffalo_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_TCMPF_Jersey_CB_cattle_Dec_2021.pdf",
+            "BV_and_SSCR_TCMPF_Jersey_CB_cattle_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/Service_Sire_Conception_Rate_Dec_21.pdf",
+            "Service_Sire_Conception_Rate_Dec_21"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/sites/default/files/QM_Guideline_Version_7_0.pdf",
+            "QM_Guideline_Version_7_0"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/sites/default/files/Quality_Mark_Certificate-Hindi.pdf",
+            "Quality_Mark_Certificate-Hindi"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/sites/default/files/Quality_Mark_Certificate-English.pdf",
+            "Quality_Mark_Certificate-English"
+        ]
+    ],
+    [
+        "valid_url_https",
+        "http://qualitymark.nddb.coop/"
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/sites/default/files/pdfs/QM_Application_User_Manual.pdf",
+            "QM_Application_User_Manual"
+        ]
+    ],
+    [
+        "valid_url_https",
+        "http://www.nddb.coop/ccnddb"
+    ],
+    [
+        "valid_url_https",
+        "https://www.nddb.coop/ndpi/"
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_APLDA_Jersey_CB_cattle_Dec_2021.pdf",
+            "BV_and_SSCR_APLDA_Jersey_CB_cattle_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_BNS_Mehsana_Buffalo_Dec_2021.pdf",
+            "BV_and_SSCR_BNS_Mehsana_Buffalo_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_SAG_HFCB_cattle_Dec_2021.pdf",
+            "BV_and_SSCR_SAG_HFCB_cattle_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_KMF_HF_cattle_Dec_19.pdf",
+            "BV_and_SSCR_KMF_HF_cattle_Dec_19"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_MSN_Mehsana_Buffalo_Dec_2021.pdf",
+            "BV_and_SSCR_MSN_Mehsana_Buffalo_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_SAG_Murrah_Buffalo_Dec_2021.pdf",
+            "BV_and_SSCR_SAG_Murrah_Buffalo_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_TCMPF_Jersey_CB_cattle_Dec_2021.pdf",
+            "BV_and_SSCR_TCMPF_Jersey_CB_cattle_Dec_2021"
+        ]
+    ],
+    [
+        "valid_pdf",
+        [
+            "2024-04-13",
+            {
+                "name": "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs",
+                "status": true
+            },
+            "https://www.nddb.coop/services/animalbreeding/geneticimprovement/sireproofs/sites/default/files/AB_BV_and_SSCR/Service_Sire_Conception_Rate_Dec_21.pdf",
+            "Service_Sire_Conception_Rate_Dec_21"
+        ]
+    ]
+]
