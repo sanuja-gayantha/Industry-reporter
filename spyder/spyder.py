@@ -30,11 +30,11 @@ class Spyder():
         self.proxy_timeout = 4
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
 
-        self.domains_path = os.path.join(os.getcwd(), 'domains.json')
-        self.proxies_path = os.path.join(os.getcwd(), 'proxyList.json')
-        self.urls_list_path = os.path.join(os.getcwd(), 'urlsList.json')
-        self.pdf_data_list_path = os.path.join(os.getcwd(), 'pdfDataList.json')
-        self.pdf_urls_list_path = os.path.join(os.getcwd(), 'pdfUrlsList.json')
+        self.domains_path = os.path.join(os.getcwd(), './spyder/domains.json')
+        self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxyList.json')
+        self.urls_list_path = os.path.join(os.getcwd(), './spyder/urlsList.json')
+        self.pdf_data_list_path = os.path.join(os.getcwd(), './spyder/pdfDataList.json')
+        self.pdf_urls_list_path = os.path.join(os.getcwd(), './spyder/pdfUrlsList.json')
 
         # temperary
         self.Initialize_proxy_ist()
@@ -113,7 +113,6 @@ class Spyder():
         while i<len(receved_list):
             temp_list.append(receved_list[i:i+N])
             i+=N
-
         return temp_list
 
 

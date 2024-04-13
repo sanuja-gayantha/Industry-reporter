@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup as soup
 import concurrent.futures
 import json
 import os
+import random
 
 from .constants import PROXIEX_LOCATED_URL, IP_CHECKING_URL, CONNECTIONS
 
@@ -17,6 +18,7 @@ class RotatingProxy():
         self.ip_checking_url = ip_checking_url
         self.proxies = []
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
+        self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxyList.json')
 
 
     def read_json_file(self, path):
@@ -25,10 +27,49 @@ class RotatingProxy():
             return result
 
 
+    def N_of_List(self, receved_list, N):
+        temp_list=[]
+        i=0
+        while i<len(receved_list):
+            temp_list.append(receved_list[i:i+N])
+            i+=N
+        return temp_list
+
+
+    def domain_response(self, proxy):
+        try:
+            response = requests.get(self.proxies_located_url, 
+                                        headers=self.headers,
+                                        proxies={"http": proxy, "https": proxy}, timeout=5)
+            return response
+
+        except Exception as e:
+            return ""
+            pass       
+
     # Find proxies IP's from web & Scrape them
     def get_proxies_from_web(self):
 
-        response = requests.get(self.proxies_located_url)
+        current_proxies_list = self.read_json_file(self.proxies_path)
+
+        random.shuffle(current_proxies_list) 
+        random_proxies_list = self.N_of_List(current_proxies_list, N=5)
+
+        # Sends 5 requests at once to same domain url
+        for count, random_proxies_list_element in enumerate(random_proxies_list):
+            with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
+                results = executor.map(self.domain_response, random_proxies_list[count])
+                
+            get_out=False
+            for response in results:
+                if response != "":
+                    # print(result.status_code, result.json())
+                    get_out=True
+                    break
+
+            if get_out:
+                break
+          
         bsObj = soup(response.content, features="lxml")
 
         for ip in bsObj.findAll('table')[0].findAll('tbody')[0].findAll('tr'):    
@@ -64,7 +105,7 @@ class RotatingProxy():
                 print(result)
                 temp_results.append(result)
 
-        with open('proxyList.json', 'w') as file:
+        with open('./rotatingProxy/proxyList.json', 'w') as file:
             json.dump(temp_results, file, indent=4)
 
         if len(temp_results)<25:

@@ -1,11 +1,13 @@
 # Developed by @sanuja : https://github.com/sanuja-gayantha
 
-from rotatingProxy.rotatingProxy import *
+from rotatingProxy import rotatingProxy
 from spyder import spyder
+from api.api import *
 
 if __name__ == "__main__":
-    # rotating_proxy_main()
+    # rotatingProxy.rotating_proxy_main()
     spyder.spyder_main()
+    # api_main()
 
 
 
