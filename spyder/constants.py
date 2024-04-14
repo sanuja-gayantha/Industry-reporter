@@ -4,6 +4,7 @@ IP_CHECKING_URL = 'https://httpbin.org/ip'
 CONNECTIONS = 10
 BASE_URL = ""
 RESPONSE_ITERATIONS_PROXY = 7
+PROXY_TIMEOUT = 5
 
 
 

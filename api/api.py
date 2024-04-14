@@ -56,13 +56,13 @@ class Api():
             print(err)
     
 
-    # def api_append_spreadsheet(self):
-    #     try:
-
+    def api_append_spreadsheet(self):
+        try:
+            print("Appending...")
 
   
-    #     except HttpError as err:
-    #         print(err)
+        except HttpError as err:
+            print(err)
     
 
 

@@ -7,7 +7,7 @@ import json
 import os
 import random
 
-from .constants import PROXIEX_LOCATED_URL, IP_CHECKING_URL, CONNECTIONS
+from .constants import PROXIEX_LOCATED_URL, IP_CHECKING_URL, CONNECTIONS, PROXY_TIMEOUT
 
 
 class RotatingProxy():
@@ -16,6 +16,7 @@ class RotatingProxy():
 
         self.proxies_located_url = proxies_located_url
         self.ip_checking_url = ip_checking_url
+        self.proxy_timeout = PROXY_TIMEOUT
         self.proxies = []
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
         self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxy_list.json')
@@ -40,7 +41,7 @@ class RotatingProxy():
         try:
             response = requests.get(self.proxies_located_url, 
                                         headers=self.headers,
-                                        proxies={"http": proxy, "https": proxy}, timeout=5)
+                                        proxies={"http": proxy, "https": proxy}, timeout=self.proxy_timeout)
             return response
 
         except Exception as e:
@@ -57,7 +58,7 @@ class RotatingProxy():
 
         # Sends 5 requests at once to same domain url
         for count, random_proxies_list_element in enumerate(random_proxies_list):
-            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
                 results = executor.map(self.domain_response, random_proxies_list[count])
                 
             get_out=False
@@ -88,7 +89,7 @@ class RotatingProxy():
         try:
             response = requests.get(self.ip_checking_url, 
                                         headers=self.headers,
-                                        proxies={"http": proxy, "https": proxy}, timeout=5)
+                                        proxies={"http": proxy, "https": proxy}, timeout=self.proxy_timeout)
             return proxy
 
         except Exception as e:

@@ -3,7 +3,6 @@
 import requests
 from bs4 import BeautifulSoup
 import concurrent.futures
-from functools import partial
 
 import time
 import json
@@ -12,10 +11,9 @@ import random
 import re
 from datetime import date
 
-
 from rotatingProxy.rotatingProxy import *
 from api.api import *
-from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY
+from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY, PROXY_TIMEOUT
 
 
 
@@ -28,7 +26,7 @@ class Spyder():
         self.domain:str
         self.proxies_list:list
         self.current_domain_url:str
-        self.proxy_timeout = 4
+        self.proxy_timeout = PROXY_TIMEOUT
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
 
         self.domains_path = os.path.join(os.getcwd(), './spyder/domains.json')
@@ -121,7 +119,7 @@ class Spyder():
         try:
             response = requests.get(self.current_domain_url, 
                                         headers=self.headers,
-                                        proxies={"http": proxy, "https": proxy}, timeout=5)
+                                        proxies={"http": proxy, "https": proxy}, timeout=self.proxy_timeout)
             return response
 
         except Exception as e:
@@ -205,7 +203,7 @@ class Spyder():
             # For every new domain call rotating_proxy_main() function to get new proxies list
             # self.Initialize_proxy_ist()
 
-            print(f"[*] Searching pdf files in {self.domain}...")
+            print("[*] Searching pdf files in "+self.domain["name"])
             while condition:
                 idx=0
 
@@ -222,7 +220,7 @@ class Spyder():
                             break
 
                     if response=="" and self.current_domain_url==(domain["name"]+"/sitemap"):
-                        self.current_domain_url=self.domain
+                        self.current_domain_url=self.domain["name"]
                         if self.list_filter(domain["name"]+"/sitemap", url_list)=="":
                             url_list.remove(domain["name"]+"/sitemap")
                         continue
