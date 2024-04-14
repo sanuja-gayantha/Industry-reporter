@@ -12,7 +12,9 @@ import re
 from datetime import date
 
 from rotatingProxy.rotatingProxy import *
-from api.api import *
+from api.google_sheet import google_sheet_api
+from api.google_drive import google_drive_api
+from .pdf_downloader import pdf_downloader_main
 from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY, PROXY_TIMEOUT
 
 
@@ -98,11 +100,11 @@ class Spyder():
                 else:
                     report_link=url
                     
-                fetch_date=date.today()
+                fetch_date=date.today().strftime("%Y/%m/%d")
                 document_title=url.split("/")[-1].split(".")[0]
                 website_domain=self.domain
 
-                return [fetch_date, website_domain, report_link, document_title]
+                return [fetch_date, website_domain, report_link, document_title, "New"]
         return ""
 
 
@@ -132,10 +134,10 @@ class Spyder():
         result = ""
 
         random.shuffle(self.proxies_list) 
-        random_proxies_list = self.N_of_List(self.proxies_list, N=5)
+        random_proxies_list = self.N_of_List(self.proxies_list, N=7)
         # print(random_proxies_list)
 
-        # Sends 5 requests at once to same domain url
+        # Sends 10 requests at once to same domain url
         for count, random_proxies_list_element in enumerate(random_proxies_list):
             with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
                 results = executor.map(self.domain_response, random_proxies_list[count])
@@ -184,10 +186,23 @@ class Spyder():
         self.get_domains()
 
         # Connect to api for get pdf links and add write them to tempPdfUrlsList.json
-        api = Api()
-        temp_pdf_links = api.api_read_spreadsheet()
-        # print(temp_pdf_links)
-        self.write_to_json_file(self.pdf_urls_list_path, temp_pdf_links)
+        apiIns = google_sheet_api.Sheet_Api()
+        temp_pdf_links = apiIns.api_read_spreadsheet()
+
+        read_json_temp_pdf_urls_from_api=[]
+        if os.path.exists(self.pdf_urls_list_path):
+            read_json_temp_pdf_urls_from_api=self.read_json_file(self.pdf_urls_list_path)
+
+        for temp_link in temp_pdf_links:
+            is_temp_link_Exist=self.list_filter(temp_link, read_json_temp_pdf_urls_from_api)
+            if is_temp_link_Exist!="":
+                read_json_temp_pdf_urls_from_api.append(is_temp_link_Exist)
+
+        if os.path.exists(self.pdf_urls_list_path):
+            os.remove(self.pdf_urls_list_path)
+
+        self.write_to_json_file(self.pdf_urls_list_path, read_json_temp_pdf_urls_from_api)
+
 
         json_url_list=[]
         json_pdf_urls_list=[]
@@ -267,7 +282,6 @@ class Spyder():
                                             
                                     # return pdf data 
                                     elif validate[0]=="valid_pdf":
-                                        pass
                                         # print(validate)
 
                                         # If pdf url not exist add it to json_pdf_urls_list
@@ -278,16 +292,34 @@ class Spyder():
                                         
                                         # Check pdf existence from pdfList.json
                                         isExist=self.list_filter(validate[1][2], read_json_pdf_urls)
+
                                         if isExist!="":
-                                            # print(isExist)
+                                            # Save all valid, invalid pdf urls to temp_pdf_urls_list.json
+                                            json_pdf_urls_list.append(validate[1][2])
+                                            self.write_to_json_file(self.pdf_urls_list_path, json_pdf_urls_list)
+
                                             # Call Api to download, upload, save data to google drive & google sheet
                                             try:
-                                                
+                                                # Download pdf/only update sheet and if there is pdf
+                                                pdf_date=validate[1][0]
+                                                pdf_domain=validate[1][1]["name"]
+                                                pdf_title=validate[1][3]
+                                                pdf_url=validate[1][2]
+                                                drive_link=""
+                                                    
+                                                # pdf_result = pdf_downloader_main(pdf_url, pdf_title)
+                                                # if pdf_result=="valid":
+                                                    # Upload to google drive and return drive 
+                                                    
+                                                    
+                                                    # create api instance
+                                                apiInstance = google_sheet_api.Sheet_Api()
 
+                                                    # save data to google drive & google sheet
+                                                data = [pdf_date, pdf_domain, pdf_title, pdf_url, drive_link, "New"]
+                                                print(data)
+                                                apiInstance.api_append_spreadsheet(data)
 
-                                                # Save pdf urls to temp_pdf_urls_list.json
-                                                json_pdf_urls_list.append(validate[1][2])
-                                                self.write_to_json_file(self.pdf_urls_list_path, json_pdf_urls_list)
                                             except:
                                                 pass
 
@@ -307,24 +339,11 @@ class Spyder():
 
                     # print(url_list)
                     idx+=1
-                    if idx==10:
+                    if idx==1:
                         break
 
                 
                 condition=False
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             
 
@@ -353,8 +372,7 @@ def spyder_main():
         ins = Spyder(answer=answer[1])
         ins.scrape_website_urls()
 
-
-
+        # ins=pdf_downloader_main("http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_MSN_Mehsana_Buffalo_Dec_2021.pdf", "test")
 
 
 

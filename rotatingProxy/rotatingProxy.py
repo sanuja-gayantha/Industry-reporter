@@ -119,13 +119,13 @@ def rotating_proxy_main():
     con=True
     while con:
         try:
-            ins = RotatingProxy(PROXIEX_LOCATED_URL, IP_CHECKING_URL)
-            ins.get_proxies_from_web()
+            proxyInstance = RotatingProxy(PROXIEX_LOCATED_URL, IP_CHECKING_URL)
+            proxyInstance.get_proxies_from_web()
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
-                results = executor.map(ins.extract_valid_proxy, ins.proxies)
+                results = executor.map(proxyInstance.extract_valid_proxy, proxyInstance.proxies)
 
-            ins.generate_json(results)
+            proxyInstance.generate_json(results)
             con=False
         except:
             pass
