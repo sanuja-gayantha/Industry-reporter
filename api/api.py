@@ -56,7 +56,7 @@ class Api():
             print(err)
     
 
-    def api_append_spreadsheet(self):
+    # def api_append_spreadsheet(self):
 
 
 

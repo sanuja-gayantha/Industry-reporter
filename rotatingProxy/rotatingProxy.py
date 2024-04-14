@@ -18,7 +18,7 @@ class RotatingProxy():
         self.ip_checking_url = ip_checking_url
         self.proxies = []
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
-        self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxyList.json')
+        self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxy_list.json')
 
 
     def read_json_file(self, path):
@@ -105,7 +105,7 @@ class RotatingProxy():
                 print(result)
                 temp_results.append(result)
 
-        with open('./rotatingProxy/proxyList.json', 'w') as file:
+        with open(self.proxies_path, 'w') as file:
             json.dump(temp_results, file, indent=4)
 
         if len(temp_results)<25:
@@ -115,14 +115,19 @@ class RotatingProxy():
 
 def rotating_proxy_main():
     print("[*] Searching new proxies...")
-    
-    ins = RotatingProxy(PROXIEX_LOCATED_URL, IP_CHECKING_URL)
-    ins.get_proxies_from_web()
+    con=True
+    while con:
+        try:
+            ins = RotatingProxy(PROXIEX_LOCATED_URL, IP_CHECKING_URL)
+            ins.get_proxies_from_web()
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
-        results = executor.map(ins.extract_valid_proxy, ins.proxies)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
+                results = executor.map(ins.extract_valid_proxy, ins.proxies)
 
-    ins.generate_json(results)
+            ins.generate_json(results)
+            con=False
+        except:
+            pass
 
 
     

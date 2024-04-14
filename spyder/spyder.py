@@ -32,10 +32,10 @@ class Spyder():
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
 
         self.domains_path = os.path.join(os.getcwd(), './spyder/domains.json')
-        self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxyList.json')
-        self.urls_list_path = os.path.join(os.getcwd(), './spyder/urlsList.json')
-        self.pdf_data_list_path = os.path.join(os.getcwd(), './spyder/pdfDataList.json')
-        self.pdf_urls_list_path = os.path.join(os.getcwd(), './spyder/tempPdfUrlsList.json')
+        self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxy_list.json')
+        self.urls_list_path = os.path.join(os.getcwd(), './spyder/urls_list.json')
+        self.pdf_data_list_path = os.path.join(os.getcwd(), './spyder/pdf_data_list.json')
+        self.pdf_urls_list_path = os.path.join(os.getcwd(), './spyder/temp_pdf_urls_list.json')
 
         # temperary
         self.Initialize_proxy_ist()
@@ -191,122 +191,129 @@ class Spyder():
         # print(temp_pdf_links)
         self.write_to_json_file(self.pdf_urls_list_path, temp_pdf_links)
 
+        json_url_list=[]
+        json_pdf_urls_list=[]
+        json_pdf_data_list=[]
+        for domain in self.domains:
+            self.domain=domain
+            condition=True
+            url_list=[]
 
+            # url_list.append(domain["name"]+"/sitemap")
+            url_list.append(self.domain["name"])
 
-        # First request (use proxy IP's)
-            # 1. Check if there is sitemap or not , Store links them in a list
-                # Yes:collect all href links
-                # No:Go to main page and collect all href links
-        # Navigate to each link 
-            # 1. Find href links
-            # 2. Add href links to the list(save links to .json file) if they does not exists already
-                # If there is .pdf link, download it, upload to google drive, Updat google sheet <-- write Api !!
-            # 3. Repeat navigation process until count of new links existance equal to zero'
-
-
-        
-
-        # json_url_list=[]
-        # json_pdf_urls_list=[]
-        # json_pdf_data_list=[]
-        # for domain in self.domains:
-        #     self.domain=domain
-        #     condition=True
-        #     url_list=[]
-
-        #     # url_list.append(domain["name"]+"/sitemap")
-        #     url_list.append(self.domain["name"])
-
-        #     # For every new domain call rotating_proxy_main() function to get new proxies list
-        #     # self.Initialize_proxy_ist()
+            # For every new domain call rotating_proxy_main() function to get new proxies list
+            # self.Initialize_proxy_ist()
             
-            # while condition:
-            #     idx=0
-            #     for count, url in enumerate(url_list):
-            #         if count == len(url_list):
-            #             break
+            while condition:
+                idx=0
 
-            #         self.current_domain_url=url
+                for count, url in enumerate(url_list):
+                    if count == len(url_list):
+                        break
 
-            #         for _ in range(RESPONSE_ITERATIONS_PROXY):
-            #             response = self.get_valid_proxy_domain_response()
-            #             if response!="":
-            #                 break
+                    self.current_domain_url=url
+                    print("[*] Searching pdf files...")
+                    print(count, self.current_domain_url)
 
-            #         if response=="" and self.current_domain_url==(domain["name"]+"/sitemap"):
-            #             self.current_domain_url=self.domain
-            #             if self.list_filter(domain["name"]+"/sitemap", url_list)=="":
-            #                 url_list.remove(domain["name"]+"/sitemap")
-            #             continue
-            #             print("Sitemap not found!!")
+                    for _ in range(RESPONSE_ITERATIONS_PROXY):
+                        response = self.get_valid_proxy_domain_response()
+                        if response!="":
+                            break
 
-                    # # if response=="":
-                    # #     if self.list_filter(self.current_domain_url, url_list)=="":
-                    # #         url_list.remove(self.current_domain_url)
-                    # #     continue
+                    if response=="" and self.current_domain_url==(domain["name"]+"/sitemap"):
+                        self.current_domain_url=self.domain
+                        if self.list_filter(domain["name"]+"/sitemap", url_list)=="":
+                            url_list.remove(domain["name"]+"/sitemap")
+                        continue
+                        print("Sitemap not found!!")
 
-                    # if response!="":
-                    #     # print(self.current_domain_url)
+                    if response!="":
+                        # print(self.current_domain_url)
 
-                    #     # Add url to urlsList.json
-                    #     json_url_list.append(self.current_domain_url)
-                    #     self.write_to_json_file(self.urls_list_path, json_url_list)
+                        # Add url to urlsList.json
+                        json_url_list.append(self.current_domain_url)
+                        self.write_to_json_file(self.urls_list_path, json_url_list)
 
-                    #     # Extract urls
-                    #     # 1.Normal page
-                    #     soup = BeautifulSoup(response.text, 'html.parser')
+                        # Extract urls
+                        # 1.Normal page
+                        soup = BeautifulSoup(response.text, 'html.parser')
 
-                    #     temp_links=[]
-                    #     for link in soup.find_all('a'):
-                    #         unfiltered_href_link=link.get('href')
-                    #         temp_links.append(unfiltered_href_link)
+                        temp_links=[]
+                        for link in soup.find_all('a'):
+                            unfiltered_href_link=link.get('href')
+                            temp_links.append(unfiltered_href_link)
 
-                        # # drop duplicates in temp_links
-                        # unfiltered_links_list=[]
-                        # [unfiltered_links_list.append(x) for x in temp_links if x not in unfiltered_links_list]
+                        # drop duplicates in temp_links
+                        unfiltered_links_list=[]
+                        [unfiltered_links_list.append(x) for x in temp_links if x not in unfiltered_links_list]
                         
-                        # for unfiltered_link in unfiltered_links_list:
-                        #     if unfiltered_link is not None:
-                        #         validate=self.validate_url(unfiltered_link)
-                        #         if validate[0] != "invalid":
-                        #             if validate[0]=="valid_url_normal":
-                        #                 updated_url=validate[1]
+                        for unfiltered_link in unfiltered_links_list:
+                            if unfiltered_link is not None:
+                                validate=self.validate_url(unfiltered_link)
+                                if validate[0] != "invalid":
+                                    if validate[0]=="valid_url_normal":
+                                        updated_url=validate[1]
 
-                        #                 value_v=self.list_filter(updated_url, url_list)
-                        #                 if value_v!="":
-                        #                     url_list.append(value_v)
-                        #                     # print(value_v)
+                                        value_v=self.list_filter(updated_url, url_list)
+                                        if value_v!="":
+                                            url_list.append(value_v)
+                                            # print(value_v)
 
-                                    # elif validate[0]=="valid_url_https":
-                                    #     updated_url=validate[1]
-                                    #     value_v=self.list_filter(updated_url, url_list)
-                                    #     if value_v!="":
-                                    #         url_list.append(value_v)
-                                    #         # print(value_v)
+                                    elif validate[0]=="valid_url_https":
+                                        updated_url=validate[1]
+                                        value_v=self.list_filter(updated_url, url_list)
+                                        if value_v!="":
+                                            url_list.append(value_v)
+                                            # print(value_v)
                                             
-                                    # # return pdf data 
-                                    # elif validate[0]=="valid_pdf":
-                                    #     # print(validate)
+                                    # return pdf data 
+                                    elif validate[0]=="valid_pdf":
+                                        pass
+                                        # print(validate)
 
-                                    #     # -----------------------------------------------------------------
-                                    #     # If pdf url not exist add it to json_pdf_urls_list
-                                    #     if os.path.exists(self.pdf_urls_list_path):
-                                    #         read_json_pdf_urls=self.read_json_file(self.pdf_urls_list_path)
-                                    #     else:
-                                    #         read_json_pdf_urls=[]
+                                        # If pdf url not exist add it to json_pdf_urls_list
+                                        if os.path.exists(self.pdf_urls_list_path):
+                                            read_json_pdf_urls=self.read_json_file(self.pdf_urls_list_path)
+                                        else:
+                                            read_json_pdf_urls=[]
                                         
-                                    #     # Check pdf existence from pdfList.json
-                                    #     isExist=self.list_filter(validate[1][2], read_json_pdf_urls)
-                                    #     if isExist!="":
-                                    #         # print(isExist)
-                                    #         json_pdf_urls_list.append(validate[1][2])
-                                    #         json_pdf_data_list.append(validate)
+                                        # Check pdf existence from pdfList.json
+                                        isExist=self.list_filter(validate[1][2], read_json_pdf_urls)
+                                        if isExist!="":
+                                            # print(isExist)
+                                            # Call Api to download, upload, save data to google drive & google sheet
+                                            try:
+                                                
 
-                                    #         self.write_to_json_file(self.pdf_urls_list_path, json_pdf_urls_list)
-                                    #         self.write_to_json_file(self.pdf_data_list_path, json_pdf_data_list)
+
+                                                # Save pdf urls to temp_pdf_urls_list.json
+                                                json_pdf_urls_list.append(validate[1][2])
+                                                self.write_to_json_file(self.pdf_urls_list_path, json_pdf_urls_list)
+                                            except:
+                                                pass
+
+
+
+
+
+          
       
-                                
-                           
+
+
+
+
+
+                        # 2. If page have frams or iframes...
+                        # .................................
+
+                    # print(url_list)
+                    idx+=1
+                    if idx==10:
+                        break
+
+                
+                condition=False
 
 
 
