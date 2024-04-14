@@ -44,13 +44,13 @@ class Pdf_Downloader():
             response = requests.get(self.pdf_download_url, 
                                         headers=self.headers,
                                         stream = True,
-                                        verify=False,
                                         proxies={"http": proxy, "https": proxy})
                                         
             if response.status_code==200:
                 content = next(response.iter_content(10))
+                # print(content)
             else:
-                return
+                return ""
 
             return response
         except Exception as e:
@@ -97,11 +97,11 @@ class Pdf_Downloader():
             with open(f"{self.temp_pdfs_dir_path}/{self.pdf_title}.pdf", "wb") as fd:
                 fd.write(response.content)
 
-            file_size = 0
-            while file_size == 0:
-                file_size = os.path.getsize(f"{self.temp_pdfs_dir_path}/{self.pdf_title}.pdf")
-                # print(file_size)
-                time.sleep(1)
+            # file_size = 0
+            # while file_size == 0:
+            #     file_size = os.path.getsize(f"{self.temp_pdfs_dir_path}/{self.pdf_title}.pdf")
+            #     # print(file_size)
+            #     time.sleep(1)
 
         return result
 

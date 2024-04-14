@@ -36,6 +36,7 @@ class Spyder():
         self.urls_list_path = os.path.join(os.getcwd(), './spyder/urls_list.json')
         self.pdf_data_list_path = os.path.join(os.getcwd(), './spyder/pdf_data_list.json')
         self.pdf_urls_list_path = os.path.join(os.getcwd(), './spyder/temp_pdf_urls_list.json')
+        self.temp_pdfs_dir_path= os.path.join(os.getcwd(), './spyder/temp_pdfs')
 
         # temperary
         self.Initialize_proxy_ist()
@@ -307,31 +308,24 @@ class Spyder():
                                                 pdf_url=validate[1][2]
                                                 drive_link=""
                                                     
-                                                # pdf_result = pdf_downloader_main(pdf_url, pdf_title)
-                                                # if pdf_result=="valid":
+                                                pdf_result = pdf_downloader_main(pdf_url, pdf_title)
+                                                if pdf_result=="valid":
                                                     # Upload to google drive and return drive 
                                                     
                                                     
                                                     # create api instance
-                                                apiInstance = google_sheet_api.Sheet_Api()
+                                                    apiInstance = google_sheet_api.Sheet_Api()
 
                                                     # save data to google drive & google sheet
-                                                data = [pdf_date, pdf_domain, pdf_title, pdf_url, drive_link, "New"]
-                                                print(data)
-                                                apiInstance.api_append_spreadsheet(data)
+                                                    data = [pdf_date, pdf_domain, pdf_title, pdf_url, drive_link, "New"]
+                                                    print(data)
+                                                    apiInstance.api_append_spreadsheet(data)
+
+                                                # if os.path.exists(f"{self.temp_pdfs_dir_path}/{self.pdf_title}.pdf"):
+                                                #     os.remove(f"{self.temp_pdfs_dir_path}/{self.pdf_title}.pdf")
 
                                             except:
                                                 pass
-
-
-
-
-
-          
-      
-
-
-
 
 
                         # 2. If page have frams or iframes...
