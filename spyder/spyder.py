@@ -204,7 +204,8 @@ class Spyder():
 
             # For every new domain call rotating_proxy_main() function to get new proxies list
             # self.Initialize_proxy_ist()
-            
+
+            print(f"[*] Searching pdf files in {self.domain}...")
             while condition:
                 idx=0
 
@@ -213,7 +214,6 @@ class Spyder():
                         break
 
                     self.current_domain_url=url
-                    print("[*] Searching pdf files...")
                     print(count, self.current_domain_url)
 
                     for _ in range(RESPONSE_ITERATIONS_PROXY):

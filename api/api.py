@@ -57,7 +57,13 @@ class Api():
     
 
     # def api_append_spreadsheet(self):
+    #     try:
 
+
+  
+    #     except HttpError as err:
+    #         print(err)
+    
 
 
 
