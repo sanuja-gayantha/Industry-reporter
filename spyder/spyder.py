@@ -21,9 +21,9 @@ from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY, 
 
 class Spyder():
 
-    def __init__(self, answer):
+    def __init__(self, scrape_type):
 
-        self.answer = answer
+        self.scrape_type = scrape_type
         self.domains:list
         self.domain:str
         self.proxies_list:list
@@ -34,8 +34,8 @@ class Spyder():
         self.domains_path = os.path.join(os.getcwd(), './spyder/domains.json')
         self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxy_list.json')
         self.urls_list_path = os.path.join(os.getcwd(), './spyder/urls_list.json')
-        self.pdf_data_list_path = os.path.join(os.getcwd(), './spyder/pdf_data_list.json')
-        self.pdf_urls_list_path = os.path.join(os.getcwd(), './spyder/temp_pdf_urls_list.json')
+        # self.pdf_data_list_path = os.path.join(os.getcwd(), './spyder/pdf_data_list.json')
+        # self.pdf_urls_list_path = os.path.join(os.getcwd(), './spyder/temp_pdf_urls_list.json')
         self.temp_pdfs_dir_path= os.path.join(os.getcwd(), './spyder/temp_pdfs')
 
         # temperary
@@ -186,35 +186,45 @@ class Spyder():
         # Get valid domains from get_domains function
         self.get_domains()
 
-        # Connect to api for get pdf links and add write them to tempPdfUrlsList.json
-        apiIns = google_sheet_api.Sheet_Api()
-        temp_pdf_links = apiIns.api_read_spreadsheet()
+        # # Connect to api for get pdf links and add write them to tempPdfUrlsList.json
+        # apiIns = google_sheet_api.Sheet_Api()
+        # temp_pdf_links = apiIns.api_read_spreadsheet()
 
-        read_json_temp_pdf_urls_from_api=[]
-        if os.path.exists(self.pdf_urls_list_path):
-            read_json_temp_pdf_urls_from_api=self.read_json_file(self.pdf_urls_list_path)
+        # read_json_temp_pdf_urls_from_api=[]
+        # if os.path.exists(self.pdf_urls_list_path):
+        #     read_json_temp_pdf_urls_from_api=self.read_json_file(self.pdf_urls_list_path)
 
-        for temp_link in temp_pdf_links:
-            is_temp_link_Exist=self.list_filter(temp_link, read_json_temp_pdf_urls_from_api)
-            if is_temp_link_Exist!="":
-                read_json_temp_pdf_urls_from_api.append(is_temp_link_Exist)
+        # for temp_link in temp_pdf_links:
+        #     is_temp_link_Exist=self.list_filter(temp_link, read_json_temp_pdf_urls_from_api)
+        #     if is_temp_link_Exist!="":
+        #         read_json_temp_pdf_urls_from_api.append(is_temp_link_Exist)
 
-        if os.path.exists(self.pdf_urls_list_path):
-            os.remove(self.pdf_urls_list_path)
+        # if os.path.exists(self.pdf_urls_list_path):
+        #     os.remove(self.pdf_urls_list_path)
 
-        self.write_to_json_file(self.pdf_urls_list_path, read_json_temp_pdf_urls_from_api)
+        # self.write_to_json_file(self.pdf_urls_list_path, read_json_temp_pdf_urls_from_api)
 
 
-        json_url_list=[]
-        json_pdf_urls_list=[]
-        json_pdf_data_list=[]
+        # json_url_list=[]
+        # json_pdf_urls_list=[]
+        # json_pdf_data_list=[]
         for domain in self.domains:
             self.domain=domain
             condition=True
             url_list=[]
 
-            # url_list.append(domain["name"]+"/sitemap")
-            url_list.append(self.domain["name"])
+            if self.scrape_type=="n":
+                # find all urls that match self.domain & ststus=unchecked from temp_urls table, assign "last url" to url_list <-------------
+                # this is why I need to filter exist urls from db not from url_list
+
+            elif self.scrape_type=="y":
+                # delete temp_urls table & append below url_list value <-------------
+
+                # url_list.append(domain["name"]+"/sitemap")
+                url_list.append(self.domain["name"])
+
+
+
 
             # For every new domain call rotating_proxy_main() function to get new proxies list
             # self.Initialize_proxy_ist()
@@ -239,16 +249,14 @@ class Spyder():
                         self.current_domain_url=self.domain["name"]
                         if self.list_filter(domain["name"]+"/sitemap", url_list)=="":
                             url_list.remove(domain["name"]+"/sitemap")
+
+                            # if there is no sitemap remove it from temp_urls table & add domain url <-------------
+
+
                         continue
                         print("Sitemap not found!!")
 
                     if response!="":
-                        # print(self.current_domain_url)
-
-                        # Add url to urlsList.json
-                        json_url_list.append(self.current_domain_url)
-                        self.write_to_json_file(self.urls_list_path, json_url_list)
-
                         # Extract urls
                         # 1.Normal page
                         soup = BeautifulSoup(response.text, 'html.parser')
@@ -269,63 +277,90 @@ class Spyder():
                                     if validate[0]=="valid_url_normal":
                                         updated_url=validate[1]
 
-                                        value_v=self.list_filter(updated_url, url_list)
-                                        if value_v!="":
-                                            url_list.append(value_v)
-                                            # print(value_v)
+                                        # value_v=self.list_filter(updated_url, url_list)
+                                        # if value_v!="":
+                                        #     url_list.append(value_v)
+                                        #     # print(value_v)
+
+                                        # filter updated_url in temp_urls table, if does not exist, <-------------
+                                            # 1. append it to url_list
+                                            # 2. add it to temp_urls table
+
+
 
                                     elif validate[0]=="valid_url_https":
                                         updated_url=validate[1]
-                                        value_v=self.list_filter(updated_url, url_list)
-                                        if value_v!="":
-                                            url_list.append(value_v)
-                                            # print(value_v)
+
+                                        # value_v=self.list_filter(updated_url, url_list)
+                                        # if value_v!="":
+                                        #     url_list.append(value_v)
+                                        #     # print(value_v)
+
+                                        # filter updated_url in temp_urls table, if does not exist, <-------------
+                                            # 1. append it to url_list
+                                            # 2. add it to temp_urls table
+
+
+
                                             
                                     # return pdf data 
                                     elif validate[0]=="valid_pdf":
+                                        # do pdf links existence filter function with temp_pdf_urls table in db <-------------
+
+
+
+
+
+
                                         # print(validate)
 
-                                        # If pdf url not exist add it to json_pdf_urls_list
-                                        if os.path.exists(self.pdf_urls_list_path):
-                                            read_json_pdf_urls=self.read_json_file(self.pdf_urls_list_path)
-                                        else:
-                                            read_json_pdf_urls=[]
+                                        # # If pdf url not exist add it to json_pdf_urls_list
+                                        # if os.path.exists(self.pdf_urls_list_path):
+                                        #     read_json_pdf_urls=self.read_json_file(self.pdf_urls_list_path)
+                                        # else:
+                                        #     read_json_pdf_urls=[]
                                         
-                                        # Check pdf existence from pdfList.json
-                                        isExist=self.list_filter(validate[1][2], read_json_pdf_urls)
+                                        # # Check pdf existence from pdfList.json
+                                        # isExist=self.list_filter(validate[1][2], read_json_pdf_urls)
 
-                                        if isExist!="":
-                                            # Save all valid, invalid pdf urls to temp_pdf_urls_list.json
-                                            json_pdf_urls_list.append(validate[1][2])
-                                            self.write_to_json_file(self.pdf_urls_list_path, json_pdf_urls_list)
+                                        # Connect to database check pdf url exist or not
+                                            # If not add it 
+                                            # Otherwise pass
 
-                                            # Call Api to download, upload, save data to google drive & google sheet
-                                            try:
-                                                # Download pdf/only update sheet and if there is pdf
-                                                pdf_date=validate[1][0]
-                                                pdf_domain=validate[1][1]["name"]
-                                                pdf_title=validate[1][3]
-                                                pdf_url=validate[1][2]
-                                                drive_link=""
-                                                    
-                                                pdf_result = pdf_downloader_main(pdf_url, pdf_title)
-                                                if pdf_result=="valid":
-                                                    # Upload to google drive and return drive 
-                                                    
-                                                    
-                                                    # create api instance
-                                                    apiInstance = google_sheet_api.Sheet_Api()
 
-                                                    # save data to google drive & google sheet
-                                                    data = [pdf_date, pdf_domain, pdf_title, pdf_url, drive_link, "New"]
-                                                    print(data)
-                                                    apiInstance.api_append_spreadsheet(data)
+
+                                        # if isExist!="":
+                                        #     # Save all valid, invalid pdf urls to temp_pdf_urls_list.json
+                                        #     json_pdf_urls_list.append(validate[1][2])
+                                        #     self.write_to_json_file(self.pdf_urls_list_path, json_pdf_urls_list)
+
+                                        #     # Call Api to download, upload, save data to google drive & google sheet
+                                        #     try:
+                                        #         # Download pdf/only update sheet and if there is pdf
+                                        #         pdf_date=validate[1][0]
+                                        #         pdf_domain=validate[1][1]["name"]
+                                        #         pdf_title=validate[1][3]
+                                        #         pdf_url=validate[1][2]
+                                        #         drive_link=""
+                                                    
+                                        #         pdf_result = pdf_downloader_main(pdf_url, pdf_title)
+                                        #         if pdf_result=="valid":
+                                        #             # Upload to google drive and return drive 
+                                                    
+                                                    
+                                        #             # create api instance
+                                        #             apiInstance = google_sheet_api.Sheet_Api()
+
+                                        #             # save data to google drive & google sheet
+                                        #             data = [pdf_date, pdf_domain, pdf_title, pdf_url, drive_link, "New"]
+                                        #             print(data)
+                                        #             apiInstance.api_append_spreadsheet(data)
 
                                                 # if os.path.exists(f"{self.temp_pdfs_dir_path}/{self.pdf_title}.pdf"):
                                                 #     os.remove(f"{self.temp_pdfs_dir_path}/{self.pdf_title}.pdf")
 
-                                            except:
-                                                pass
+                                            # except:
+                                            #     pass
 
 
                         # 2. If page have frams or iframes...
@@ -363,12 +398,7 @@ def questions():
 def spyder_main():
     answer = questions()
     if answer[0]:
-        ins = Spyder(answer=answer[1])
+        ins = Spyder(scrape_type=answer[1])
         ins.scrape_website_urls()
-
-        # ins=pdf_downloader_main("http://www.nddb.coop/sites/default/files/AB_BV_and_SSCR/BV_and_SSCR_MSN_Mehsana_Buffalo_Dec_2021.pdf", "test")
-
-
-
 
 
