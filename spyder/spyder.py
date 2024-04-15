@@ -12,6 +12,7 @@ import re
 from datetime import date
 
 from rotatingProxy.rotatingProxy import *
+from database import *
 from api.google_sheet import google_sheet_api
 from api.google_drive import google_drive_api
 from .pdf_downloader import pdf_downloader_main
@@ -186,6 +187,11 @@ class Spyder():
         # Get valid domains from get_domains function
         self.get_domains()
 
+        # create db tables if they does not exists
+        with database.Database() as db:
+            db.create_table_urls()
+            db.create_table_pdf_urls()
+
         # # Connect to api for get pdf links and add write them to tempPdfUrlsList.json
         # apiIns = google_sheet_api.Sheet_Api()
         # temp_pdf_links = apiIns.api_read_spreadsheet()
@@ -216,12 +222,25 @@ class Spyder():
             if self.scrape_type=="n":
                 # find all urls that match self.domain & ststus=unchecked from temp_urls table, assign "last url" to url_list <-------------
                 # this is why I need to filter exist urls from db not from url_list
+                pass
 
             elif self.scrape_type=="y":
-                # delete temp_urls table & append below url_list value <-------------
-
+                table_url=self.domain["name"]
                 # url_list.append(domain["name"]+"/sitemap")
-                url_list.append(self.domain["name"])
+
+                url_list.append(table_url)
+
+                # delete temp_urls table & append above url_list value <-------------
+                with database.Database() as db:
+                    db.drop_table_urls()
+                    db.create_table_urls()
+                    db.append_to_table_urls(table_url, "unchecked")
+
+            return
+
+
+
+
 
 
 
@@ -244,6 +263,9 @@ class Spyder():
                         response = self.get_valid_proxy_domain_response()
                         if response!="":
                             break
+                    
+                    # mark VALID_URL ststus as "checked" <-------------
+
 
                     if response=="" and self.current_domain_url==(domain["name"]+"/sitemap"):
                         self.current_domain_url=self.domain["name"]
@@ -305,6 +327,7 @@ class Spyder():
                                             
                                     # return pdf data 
                                     elif validate[0]=="valid_pdf":
+                                        pass
                                         # do pdf links existence filter function with temp_pdf_urls table in db <-------------
 
 
@@ -377,9 +400,9 @@ class Spyder():
             
 
 
-# Question : Is this a brand new scraping? 
+# Question : Do you want to check all the domains from start?
 def questions():
-    print("Is this a brand new scraping?\n Type 'y' to yes... \n Type 'n'... to no \n Type 'exit' to quit..")
+    print("Do you want to check all the domains from start?\n Type 'y' to yes... \n Type 'n'... to no \n Type 'exit' to quit..")
     while True:
         command = input("> ")
         if command == "exit":
@@ -400,5 +423,3 @@ def spyder_main():
     if answer[0]:
         ins = Spyder(scrape_type=answer[1])
         ins.scrape_website_urls()
-
-
