@@ -224,11 +224,7 @@ class Spyder():
                         response = self.get_valid_proxy_domain_response()
                         if response!="":
                             break
-                        
-                    # # mark VALID_URL ststus as "checked" <-------------
-                    # with database.Database() as db:
-                    #     db.update_table_url_ststus(self.current_domain_url)
-
+                            
 
                     if response=="" and self.current_domain_url==(domain+"/sitemap"):
                         # if there is no sitemap add domain url to url_list & TEMP_URLS table  <-------------
@@ -250,7 +246,7 @@ class Spyder():
                             # 2. If page have frams or iframes...
                             # .................................
 
-                            
+
 
 
 
