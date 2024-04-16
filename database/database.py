@@ -54,8 +54,24 @@ class Database():
 
     def create_table_pdf_urls(self):
         self.cur.execute('''CREATE TABLE IF NOT EXISTS TEMP_PDF_URLS(ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                                    VALID_PDF_URL VARCHAR);''')
+                                                                    VALID_PDF_URL_DOMAIN VARCHAR,
+                                                                    VALID_PDF_URL VARCHAR,
+                                                                    STATUS VARCHAR
+                                                                    );''')
 
+
+    def check_table_pdf_urls_existence(self, pdf_table_url):
+        pdf_url_existence =  self.cur.execute("SELECT * FROM TEMP_PDF_URLS WHERE VALID_PDF_URL = (?)", (pdf_table_url,)).fetchone()
+        return pdf_url_existence
+
+
+    def append_to_table_pdf_urls(self, pdf_table_domain, pdf_table_url):
+        self.cur.execute('''INSERT INTO TEMP_PDF_URLS (VALID_PDF_URL_DOMAIN, VALID_PDF_URL) VALUES (?, ?)''', (pdf_table_domain, pdf_table_url))
+
+
+    def update_table_pdf_url_ststus(self, pdf_url):
+        self.cur.execute("""UPDATE TEMP_PDF_URLS SET STATUS = "uploaded" WHERE VALID_PDF_URL = (?)""", (pdf_url,))
+    
 
 
 

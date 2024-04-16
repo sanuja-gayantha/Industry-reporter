@@ -5,12 +5,10 @@ import concurrent.futures
 import os
 import time
 import random
+import json
 
 from rotatingProxy.rotatingProxy import *
-from api.google_sheet import google_sheet_api
-from api.google_drive import google_drive_api
 from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY, PROXY_TIMEOUT
-
 
 
 class Pdf_Downloader():
@@ -44,7 +42,7 @@ class Pdf_Downloader():
             response = requests.get(self.pdf_download_url, 
                                         headers=self.headers,
                                         stream = True,
-                                        proxies={"http": proxy, "https": proxy})
+                                        proxies={"http": proxy, "https": proxy}, timeout=self.proxy_timeout)
                                         
             if response.status_code==200:
                 content = next(response.iter_content(10))
