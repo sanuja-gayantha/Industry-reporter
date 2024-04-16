@@ -15,7 +15,7 @@ from rotatingProxy.rotatingProxy import *
 from database import *
 from api import api
 from .pdf_downloader import pdf_downloader_main
-from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY, PROXY_TIMEOUT, GOOGLE_SHEET_SCOPES
+from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY, PROXY_TIMEOUT, GOOGLE_SHEET_SCOPES, GOOGLE_DRIVE_SCOPES
 
 
 class Spyder():
@@ -63,20 +63,18 @@ class Spyder():
         
         if url.split(":")[0]=="https" or url.split(":")[0]=="http":
 
-            # removing social media links and invalid url formats
-            url_identifier=url.split(":")[1].split("//")[1].split(".")[1] 
-            current_url_identifier=self.current_domain_url.split(":")[1].split("//")[1].split(".")[1]
-
-            if current_url_identifier!=url_identifier: # <--------- Not equal check current_url_identifier domain contain in this after spliting it to a list
-
-                return ["invalid", 0]
-            
-
             # is it a pdf
             is_pdf=self.validate_pdf(url, "https") 
             if is_pdf!="":
                 return ["valid_pdf", is_pdf]
+                
+            # removing social media links and invalid url formats
+            url_identifier=url.split(":")[1].split("//")[1].split(".")[1] 
+            current_url_identifier=self.current_domain_url.split(":")[1].split("//")[1].split(".")[1]
 
+            if current_url_identifier!=url_identifier:
+                return ["invalid", 0]
+            
             return ["valid_url_https", url]
 
         # /
@@ -249,6 +247,14 @@ class Spyder():
                             unfiltered_href_link=link.get('href')
                             temp_links.append(unfiltered_href_link)
 
+                            # 2. If page have frams or iframes...
+                            # .................................
+
+                            
+
+
+
+
                         # drop duplicates in temp_links
                         unfiltered_links_list=[]
                         [unfiltered_links_list.append(x) for x in temp_links if x not in unfiltered_links_list]
@@ -311,13 +317,11 @@ class Spyder():
                                                                 
                                             pdf_result = pdf_downloader_main(pdf_url, pdf_title)
                                             if pdf_result=="valid":
-                                                # mark pdf upload ststus as "uploaded" <-------------
-                                                with database.Database() as db:
-                                                    db.update_table_pdf_url_ststus(pdf_url)       
-
+ 
                                                 # Upload to google drive and return drive link/url
-                                                print("Uploading...", validate[1])      
-
+                                                print("Uploading...")      
+                                                apiDriveInstance = api.Api(api_scope=GOOGLE_DRIVE_SCOPES)
+                                                drive_link = apiDriveInstance.api_upload_to_drive(pdf_file_path = f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf", pdf_file_title=f"{pdf_title}")
                                                                     
                                                 # create api instance
                                                 apiInstance = api.Api(api_scope=GOOGLE_SHEET_SCOPES)
@@ -327,12 +331,12 @@ class Spyder():
                                                 # print(data)
                                                 apiInstance.api_append_spreadsheet(data)
 
-                                                # if os.path.exists(f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf"):
-                                                #     os.remove(f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf")
+                                                if os.path.exists(f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf"):
+                                                    os.remove(f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf")
 
-
-                        # 2. If page have frams or iframes...
-                        # .................................
+                                                # mark pdf upload ststus as "uploaded" <-------------
+                                                with database.Database() as db:
+                                                    db.update_table_pdf_url_ststus(pdf_url)      
 
 
                     # mark VALID_URL ststus as "checked" <-------------
