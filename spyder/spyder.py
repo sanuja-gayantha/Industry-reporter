@@ -359,7 +359,7 @@ class Spyder():
 
 # Question : Do you want to check all the domains from start?
 def questions():
-    print("Do you want to check all the domains from start?\n Type 'y' to yes... \n Type 'n'... to no \n Type 'exit' to quit..")
+    print("Do you want to check all the websites from the start?\n Type 'y' to yes... \n Type 'n'... to no \n Type 'exit' to quit..")
     while True:
         command = input("> ")
         if command == "exit":
