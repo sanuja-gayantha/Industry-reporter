@@ -1,4 +1,4 @@
-# Developed by @sanuja : https://github.com/sanuja-gayantha
+# Developed by @sanuja : https://www.fiverr.com/sanuja_kumara
 
 import requests
 from bs4 import BeautifulSoup
@@ -224,7 +224,7 @@ class Spyder():
                         response = self.get_valid_proxy_domain_response()
                         if response!="":
                             break
-                            
+
 
                     if response=="" and self.current_domain_url==(domain+"/sitemap"):
                         # if there is no sitemap add domain url to url_list & TEMP_URLS table  <-------------
@@ -241,15 +241,20 @@ class Spyder():
                         temp_links=[]
                         for link in soup.find_all('a'):
                             unfiltered_href_link=link.get('href')
-                            temp_links.append(unfiltered_href_link)
+                            iframe_link=""
 
                             # 2. If page have frams or iframes...
                             # .................................
+                            print(temp_links)
 
 
 
 
+                            temp_links.append(unfiltered_href_link)
 
+
+
+                        return
 
                         # drop duplicates in temp_links
                         unfiltered_links_list=[]

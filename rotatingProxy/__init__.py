@@ -1,4 +1,5 @@
-# Developed by @sanuja : https://github.com/sanuja-gayantha
+# Developed by @sanuja : https://www.fiverr.com/sanuja_kumara
+
 
 # print("rotating_proxy __init__")
 __all__ = ["constants", "rotatingProxy"]
