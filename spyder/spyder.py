@@ -15,6 +15,7 @@ from rotatingProxy.rotatingProxy import *
 from database import *
 from api import api
 from .pdf_downloader import pdf_downloader_main
+from .iframe_extractor import get_iframe_pdf_urls_main
 from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY, PROXY_TIMEOUT, GOOGLE_SHEET_SCOPES, GOOGLE_DRIVE_SCOPES
 
 
@@ -198,7 +199,7 @@ class Spyder():
                 table_url=self.domain
                 # table_url=self.domain+"/sitemap"
 
-                # delete temp_urls table & append above url_list value <-------------
+                # delete temp_urls table & append above url_list value 
                 with database.Database() as db:
                     db.drop_table_urls()
                     db.create_table_urls()
@@ -211,7 +212,7 @@ class Spyder():
             idx=0
             while condition:
                 
-                # find url that match self.domain & status=unchecked from temp_urls table <-------------
+                # find url that match self.domain & status=unchecked from temp_urls table 
                 with database.Database() as db:
                     domain_and_status_uncheckeds=db.check_table_url_domain_and_status_uncheckeds(self.domain)
 
@@ -227,7 +228,7 @@ class Spyder():
 
 
                     if response=="" and self.current_domain_url==(domain+"/sitemap"):
-                        # if there is no sitemap add domain url to url_list & TEMP_URLS table  <-------------
+                        # if there is no sitemap add domain url to url_list & TEMP_URLS table  
                         print(domain+"/sitemap", "not exists..")
                         with database.Database() as db:
                             db.append_to_table_urls(self.domain, domain, "unchecked") 
@@ -241,20 +242,17 @@ class Spyder():
                         temp_links=[]
                         for link in soup.find_all('a'):
                             unfiltered_href_link=link.get('href')
-                            iframe_link=""
-
-                            # 2. If page have frams or iframes...
-                            # .................................
-                            print(temp_links)
-
-
-
-
                             temp_links.append(unfiltered_href_link)
 
+                        
+                        # 2. If page have frams or iframes...
+                        # .................................
+                        iframe_pdf_urls=get_iframe_pdf_urls_main(soup)
+                        # print(iframe_pdf_urls)
+                        if iframe_pdf_urls!="":
+                            for iframe_pdf_url in iframe_pdf_urls:
+                                temp_links.append(iframe_pdf_url)
 
-
-                        return
 
                         # drop duplicates in temp_links
                         unfiltered_links_list=[]
@@ -267,7 +265,7 @@ class Spyder():
 
                                     if validate[0]=="valid_url_normal":
                                         updated_url=validate[1]
-                                        # filter updated_url in TEMP_URLS table, if does not exist, <-------------
+                                        # filter updated_url in TEMP_URLS table, if does not exist, 
                                             # 1. append it to url_list
                                             # 2. add it to TEMP_URLS table
     
@@ -281,7 +279,7 @@ class Spyder():
 
                                     elif validate[0]=="valid_url_https":
                                         updated_url=validate[1]
-                                        # filter updated_url in TEMP_URLS table, if does not exist, <-------------
+                                        # filter updated_url in TEMP_URLS table, if does not exist, 
                                             # 1. append it to url_list
                                             # 2. add it to TEMP_URLS table
 
@@ -295,7 +293,7 @@ class Spyder():
                                     # return pdf data 
                                     elif validate[0]=="valid_pdf":
 
-                                        # do pdf links existence filter function with temp_pdf_urls table in db <-------------                                         
+                                        # do pdf links existence filter function with temp_pdf_urls table in db                                          
                                         pdf_table_url=validate[1][2]
                                         with database.Database() as db:
                                             pdf_url_existence = db.check_table_pdf_urls_existence(pdf_table_url)
@@ -335,12 +333,12 @@ class Spyder():
                                                 if os.path.exists(f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf"):
                                                     os.remove(f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf")
 
-                                                # mark pdf upload ststus as "uploaded" <-------------
+                                                # mark pdf upload ststus as "uploaded" 
                                                 with database.Database() as db:
                                                     db.update_table_pdf_url_ststus(pdf_url)      
 
 
-                    # mark VALID_URL ststus as "checked" <-------------
+                    # mark VALID_URL ststus as "checked" 
                     with database.Database() as db:
                         db.update_table_url_ststus(self.current_domain_url)
 
