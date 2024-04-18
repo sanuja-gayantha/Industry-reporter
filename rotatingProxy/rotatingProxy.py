@@ -109,6 +109,9 @@ class RotatingProxy():
         with open(self.proxies_path, 'w') as file:
             json.dump(temp_results, file, indent=4)
 
+        if len(temp_results)>=25:
+            print("[*] Completed...")
+
         if len(temp_results)<25:
             self.rotating_proxy_main()
 

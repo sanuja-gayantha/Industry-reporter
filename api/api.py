@@ -47,7 +47,7 @@ class Api():
             service = build("sheets", "v4", credentials=self.credentials)
             result = (
                 service.spreadsheets().values()
-                .get(spreadsheetId=SPREADSHEET_ID, range="Details!A2:F59997")
+                .get(spreadsheetId=SPREADSHEET_ID, range="Details!A2:G59997")
                 .execute())
             
             values = result.get("values", [])
@@ -70,7 +70,7 @@ class Api():
                 .values()
                 .append(
                     spreadsheetId=SPREADSHEET_ID,
-                    range="Details!A2:F59997",
+                    range="Details!A2:G59997",
                     valueInputOption="USER_ENTERED",
                     body=body,
                 )
@@ -128,7 +128,7 @@ class Api():
             file = None
             pdf_file = None
 
-        return pdf_file.get("webViewLink")
+        return [pdf_file.get("webViewLink"), pdf_file.get("id")]
       
 
 

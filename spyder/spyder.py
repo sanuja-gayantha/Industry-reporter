@@ -10,6 +10,7 @@ import os
 import random
 import re
 from datetime import date
+import uuid 
 
 from rotatingProxy.rotatingProxy import *
 from database import *
@@ -38,7 +39,6 @@ class Spyder():
         # self.pdf_urls_list_path = os.path.join(os.getcwd(), './spyder/temp_pdf_urls_list.json')
         self.temp_pdfs_dir_path= os.path.join(os.getcwd(), './spyder/temp_pdfs')
 
-        # temperary
         self.Initialize_proxy_ist()
 
 
@@ -55,7 +55,6 @@ class Spyder():
 
 
     def Initialize_proxy_ist(self):
-        # rotating_proxy_main() 
         self.proxies_list = self.read_json_file(self.proxies_path)
 
 
@@ -205,8 +204,6 @@ class Spyder():
                     db.create_table_urls()
                     db.append_to_table_urls(self.domain, table_url, "unchecked")
     
-            # For every new domain call rotating_proxy_main() function to get new proxies list
-            # self.Initialize_proxy_ist()
 
             print("[*] Searching pdf files in "+self.domain)
             idx=0
@@ -308,11 +305,12 @@ class Spyder():
                                             # Call Api to download, upload, save data to google drive & google sheet
                             
                                             # Download pdf/only update sheet and if there is pdf
+                                            pdf_id=""
                                             pdf_date=validate[1][0]
                                             pdf_domain=validate[1][1]
                                             pdf_title=validate[1][3]
                                             pdf_url=validate[1][2]
-                                            drive_link=""
+                     
                                                                 
                                             pdf_result = pdf_downloader_main(pdf_url, pdf_title)
                                             if pdf_result=="valid":
@@ -320,13 +318,14 @@ class Spyder():
                                                 # Upload to google drive and return drive link/url
                                                 print("Uploading...")      
                                                 apiDriveInstance = api.Api(api_scope=GOOGLE_DRIVE_SCOPES)
-                                                drive_link = apiDriveInstance.api_upload_to_drive(pdf_file_path = f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf", pdf_file_title=f"{pdf_title}")
-                                                                    
+                                                drive_response = apiDriveInstance.api_upload_to_drive(pdf_file_path = f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf", pdf_file_title=f"{pdf_title}")
+                                                pdf_id=drive_response[1]
+
                                                 # create api instance
                                                 apiInstance = api.Api(api_scope=GOOGLE_SHEET_SCOPES)
 
                                                 # save data to google drive & google sheet
-                                                data = [pdf_date, pdf_domain, pdf_title, pdf_url, drive_link, "New"]
+                                                data = [pdf_id, pdf_date, pdf_domain, pdf_title, pdf_url, drive_response[0], "New"]
                                                 # print(data)
                                                 apiInstance.api_append_spreadsheet(data)
 
@@ -353,11 +352,6 @@ class Spyder():
 
 
 
-
-            
-
-
-# Question : Do you want to check all the domains from start?
 def questions():
     print("Do you want to check all the websites from the start?\n Type 'y' to yes... \n Type 'n'... to no \n Type 'exit' to quit..")
     while True:
