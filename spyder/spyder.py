@@ -346,9 +346,9 @@ class Spyder():
                 else:
                     condition=False
 
-                idx+=1
-                if idx==1:
-                    break
+                # idx+=1
+                # if idx==1:
+                #     break
 
 
 
