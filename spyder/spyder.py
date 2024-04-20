@@ -32,7 +32,7 @@ class Spyder():
         self.proxy_timeout = PROXY_TIMEOUT
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
 
-        self.domains_path = os.path.join(os.getcwd(), './spyder/domains.json')
+        # self.domains_path = os.path.join(os.getcwd(), './spyder/domains.json')
         self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxy_list.json')
         self.urls_list_path = os.path.join(os.getcwd(), './spyder/urls_list.json')
         # self.pdf_data_list_path = os.path.join(os.getcwd(), './spyder/pdf_data_list.json')
@@ -156,10 +156,12 @@ class Spyder():
 
     def get_domains(self):
         # Call Api for to get domains
-        # domain_list will be replaced in future!!!
+        apiInstance = api.Api(api_scope=GOOGLE_SHEET_SCOPES)
+        domains_data=apiInstance.api_read_domains_from_spreadsheet()
+        self.domains = domains_data
+        # print(domains_data)
+        # self.domains = self.read_json_file(self.domains_path)
 
-        # Read filtered domains
-        self.domains = self.read_json_file(self.domains_path)
         return
 
     def list_filter(self, value_v, list_v):

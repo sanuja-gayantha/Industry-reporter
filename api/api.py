@@ -59,6 +59,24 @@ class Api():
   
         except HttpError as err:
             print(err)
+
+    def api_read_domains_from_spreadsheet(self):
+        try:
+            service = build("sheets", "v4", credentials=self.credentials)
+            result = (
+                service.spreadsheets().values()
+                .get(spreadsheetId=SPREADSHEET_ID, range="Domains!A2:A1000")
+                .execute())
+            
+            values = result.get("values", [])
+
+            domains_data=[]
+            for row in values:
+                domains_data.append(row[0])
+            return domains_data
+  
+        except HttpError as err:
+            print(err)
     
 
     def api_append_spreadsheet(self, values):
