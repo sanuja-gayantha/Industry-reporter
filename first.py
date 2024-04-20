@@ -4,7 +4,7 @@ from rotatingProxy import rotatingProxy
 
 if __name__ == "__main__":
     rotatingProxy.rotating_proxy_main()
-    print("[*] Run 'second' script >> second.py")
+    print("[*] Run 'second' script >>")
 
 
 

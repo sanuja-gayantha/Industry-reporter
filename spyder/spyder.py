@@ -197,8 +197,8 @@ class Spyder():
                 pass
 
             elif self.scrape_type=="y":
-                table_url=self.domain
-                # table_url=self.domain+"/sitemap"
+                # table_url=self.domain
+                table_url=self.domain+"/sitemap"
 
                 # delete temp_urls table & append above url_list value 
                 with database.Database() as db:
@@ -208,7 +208,7 @@ class Spyder():
     
 
             print("[*] Searching pdf files in "+self.domain)
-            idx=0
+            # idx=0
             while condition:
                 
                 # find url that match self.domain & status=unchecked from temp_urls table 
