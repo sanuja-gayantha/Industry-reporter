@@ -12,7 +12,7 @@ import re
 from datetime import date
 import uuid 
 
-from rotatingProxy.rotatingProxy import *
+from rotatingProxy import rotatingProxy
 from database import *
 from api import api
 from .pdf_downloader import pdf_downloader_main
@@ -31,14 +31,10 @@ class Spyder():
         self.current_domain_url:str
         self.proxy_timeout = PROXY_TIMEOUT
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
-
-        # self.domains_path = os.path.join(os.getcwd(), './spyder/domains.json')
         self.proxies_path = os.path.join(os.getcwd(), './rotatingProxy/proxy_list.json')
-        self.urls_list_path = os.path.join(os.getcwd(), './spyder/urls_list.json')
-        # self.pdf_data_list_path = os.path.join(os.getcwd(), './spyder/pdf_data_list.json')
-        # self.pdf_urls_list_path = os.path.join(os.getcwd(), './spyder/temp_pdf_urls_list.json')
         self.temp_pdfs_dir_path= os.path.join(os.getcwd(), './spyder/temp_pdfs')
 
+        rotatingProxy.rotating_proxy_main()
         self.Initialize_proxy_ist()
 
 
@@ -208,9 +204,14 @@ class Spyder():
     
 
             print("[*] Searching pdf files in "+self.domain)
-            # idx=0
+            idx=0
             while condition:
-                
+                # creating new proxies after every 500 urls
+                if idx >= 500:
+                    idx = 0
+                    rotatingProxy.rotating_proxy_main()
+                    self.Initialize_proxy_ist()
+
                 # find url that match self.domain & status=unchecked from temp_urls table 
                 with database.Database() as db:
                     domain_and_status_uncheckeds=db.check_table_url_domain_and_status_uncheckeds(self.domain)
@@ -346,16 +347,14 @@ class Spyder():
                 else:
                     condition=False
 
-                # idx+=1
-                # if idx==1:
-                #     break
+                idx+=1
 
 
 
 
 
 def questions():
-    print("Do you want to check all the websites from the start?\n Type 'y' to yes... \n Type 'n'... to no \n Type 'exit' to quit..")
+    print("Do you want to check the sequence of all the websites from the start?\n Type 'y' to yes... \n Type 'n'... to no \n Type 'exit' to quit..")
     while True:
         command = input("> ")
         if command == "exit":
@@ -372,8 +371,17 @@ def questions():
 
 
 def spyder_main():
+    answer = []
     answer = questions()
-    if answer[0]:
-        ins = Spyder(scrape_type=answer[1])
-        ins.scrape_website_urls()
+    
+    while True:
+        try:
+            if answer[0]:
+                ins = Spyder(scrape_type=answer[1])
+                ins.scrape_website_urls()
+
+            answer = [True, "y"]
+        except Exception as e:
+            print(e)
+            answer = [True, "n"]
 

@@ -8,7 +8,7 @@ import random
 import json
 
 from rotatingProxy.rotatingProxy import *
-from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY, PROXY_TIMEOUT
+from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY
 
 
 class Pdf_Downloader():
@@ -17,7 +17,7 @@ class Pdf_Downloader():
         self.proxies_list=self.read_json_file(os.path.join(os.getcwd(), './rotatingProxy/proxy_list.json'))
         self.pdf_download_url=pdf_url
         self.pdf_title=pdf_title
-        self.proxy_timeout = PROXY_TIMEOUT
+        self.proxy_timeout = 15
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
         self.temp_pdfs_dir_path= os.path.join(os.getcwd(), './spyder/temp_pdfs')
 

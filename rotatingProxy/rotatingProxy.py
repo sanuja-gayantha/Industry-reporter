@@ -111,9 +111,10 @@ class RotatingProxy():
 
         if len(temp_results)>=25:
             print("[*] Completed...")
+            return "False"
 
         if len(temp_results)<25:
-            self.rotating_proxy_main()
+            return "True"
 
 
 
@@ -128,10 +129,12 @@ def rotating_proxy_main():
             with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
                 results = executor.map(proxyInstance.extract_valid_proxy, proxyInstance.proxies)
 
-            proxyInstance.generate_json(results)
-            con=False
+            cons = proxyInstance.generate_json(results)
+            if cons == "False":
+                con=False
         except:
             pass
+
 
 
     

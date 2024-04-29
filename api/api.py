@@ -9,6 +9,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.errors import HttpError
+from google.oauth2 import service_account
 
 from .constants import SPREADSHEET_ID, GOOGLE_SHEET_SCOPES, GOOGLE_DRIVE_SCOPES
 
@@ -20,26 +21,30 @@ class Api():
 
 
     def authentication(self):
-        path=""
-        if self.SCOPES == [GOOGLE_SHEET_SCOPES]:
-            path = "./api/spreadsheets/"
-        elif self.SCOPES == [GOOGLE_DRIVE_SCOPES]:
-            path = "./api/drive/"
+        # path=""
+        # if self.SCOPES == [GOOGLE_SHEET_SCOPES]:
+        #     path = "./api/spreadsheets/"
+        # elif self.SCOPES == [GOOGLE_DRIVE_SCOPES]:
+        #     path = "./api/drive/"
 
-        if os.path.exists(f"{path}/token.json"):
-            self.credentials = Credentials.from_authorized_user_file(f"{path}/token.json", self.SCOPES)
+        # if os.path.exists(f"{path}/token.json"):
+        #     self.credentials = Credentials.from_authorized_user_file(f"{path}/token.json", self.SCOPES)
 
-        if not self.credentials or not self.credentials.valid:
-            if self.credentials and self.credentials.expired and self.credentials.refresh_token:
-                self.credentials.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    f"{path}/credentials.json", self.SCOPES
-                )
-                self.credentials = flow.run_local_server(port=0)
-                # Save the credentials for the next run
-                with open(f"{path}/token.json", "w") as token:
-                    token.write(self.credentials.to_json())
+        # if not self.credentials or not self.credentials.valid:
+        #     if self.credentials and self.credentials.expired and self.credentials.refresh_token:
+        #         self.credentials.refresh(Request())
+        #     else:
+        #         flow = InstalledAppFlow.from_client_secrets_file(
+        #             f"{path}/credentials.json", self.SCOPES
+        #         )
+        #         self.credentials = flow.run_local_server(port=0)
+        #         # Save the credentials for the next run
+        #         with open(f"{path}/token.json", "w") as token:
+        #             token.write(self.credentials.to_json())
+        self.credentials = service_account.Credentials.from_service_account_file(os.path.join(os.getcwd(), './api/credentials.json'), scopes=self.SCOPES)
+
+
+
 
     # Call the Sheet Activity API
     def api_read_spreadsheet(self):

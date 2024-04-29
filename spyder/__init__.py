@@ -2,4 +2,4 @@
 
 
 # print("spyder __init__")
-__all__ = ["constants", "spyder", "pdf_downloader"]
+__all__ = ["constants", "spyder", "pdf_downloader", "iframe_extractor"]

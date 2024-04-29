@@ -4,6 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import concurrent.futures
+import json
+import random
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
