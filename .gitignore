@@ -1,5 +1,5 @@
 api/credentials.json
-api/constants
+api/constants.py
 .git
 database/database.db
 
