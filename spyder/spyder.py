@@ -16,7 +16,9 @@ from rotatingProxy import rotatingProxy
 from database import *
 from api import api
 from .pdf_downloader import pdf_downloader_main
+from .selenium_pdf_downloader import selenium_pdf_downloader_main
 from .iframe_extractor import get_iframe_pdf_urls_main
+from .selenium_scraper import get_valid_urls_main
 from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY, PROXY_TIMEOUT, GOOGLE_SHEET_SCOPES, GOOGLE_DRIVE_SCOPES
 
 
@@ -55,8 +57,34 @@ class Spyder():
 
 
     def validate_url(self, url):
+
+        filter_words=[
+            "pt-br",
+            "es-ar",
+            "es-cl",
+            "es-co",
+            "fr",
+            "de",
+            "es",
+            "it",
+            "es-es",
+            "el",
+            "ko",
+            "ja",
+            "our-team",
+            "about",
+            "contact-us",
+            "offices",
+            "careers",
+            "node"
+        ]
+
+        ext =[
+            "mp4",
+            "mp3"
+        ]
+
         # https://
-        
         if url.split(":")[0]=="https" or url.split(":")[0]=="http":
 
             # is it a pdf
@@ -70,12 +98,29 @@ class Spyder():
 
             if current_url_identifier!=url_identifier:
                 return ["invalid", 0]
-            
+
+            countries_url_identifier=url.split("/")
+            if not set(countries_url_identifier).isdisjoint(set(filter_words)):
+                # print("Duplicates found.")
+                return ["invalid", 0]
+
+            ext_url_identifier=url.split("/")[-1].split(".")[-1]
+            if not set(ext_url_identifier).isdisjoint(set(ext)):
+                # print("Duplicates found.")
+                return ["invalid", 0]
+
             return ["valid_url_https", url]
 
         # /
         elif url.split("/")[0]=="":
+
+            countries_url_identifier=url.split("/")
+            if not set(countries_url_identifier).isdisjoint(set(filter_words)):
+                # print("Duplicates found.")
+                return ["invalid", 0]           
+
             is_pdf=self.validate_pdf(url, "/") 
+            
             if is_pdf!="":
                 return ["valid_pdf", is_pdf]
 
@@ -155,6 +200,7 @@ class Spyder():
         apiInstance = api.Api(api_scope=GOOGLE_SHEET_SCOPES)
         domains_data=apiInstance.api_read_domains_from_spreadsheet()
         self.domains = domains_data
+        # self.domains = ["https://www.npci.org.in/"]
         # print(domains_data)
         # self.domains = self.read_json_file(self.domains_path)
 
@@ -188,24 +234,26 @@ class Spyder():
             self.domain=domain
             condition=True
 
-
             if self.scrape_type=="n":
                 pass
 
             elif self.scrape_type=="y":
-                # table_url=self.domain
-                table_url=self.domain+"/sitemap"
+                table_url=self.domain
+                # table_url2=self.domain+"/sitemap"
 
                 # delete temp_urls table & append above url_list value 
                 with database.Database() as db:
                     db.drop_table_urls()
                     db.create_table_urls()
                     db.append_to_table_urls(self.domain, table_url, "unchecked")
+                    # db.append_to_table_urls(self.domain, table_url2, "unchecked")
     
 
             print("[*] Searching pdf files in "+self.domain)
             idx=0
             while condition:
+                selenium_type=False
+
                 # creating new proxies after every 500 urls
                 if idx >= 500:
                     idx = 0
@@ -221,37 +269,42 @@ class Spyder():
                     self.current_domain_url=domain_and_status_uncheckeds[0][0]
                     print(self.current_domain_url)
 
+                    response=""
+                    # if selenium_type!=True:
                     for _ in range(RESPONSE_ITERATIONS_PROXY):
                         response = self.get_valid_proxy_domain_response()
                         if response!="":
                             break
 
 
-                    if response=="" and self.current_domain_url==(domain+"/sitemap"):
-                        # if there is no sitemap add domain url to url_list & TEMP_URLS table  
-                        print(domain+"/sitemap", "not exists..")
-                        with database.Database() as db:
-                            db.append_to_table_urls(self.domain, domain, "unchecked") 
-
-
-                    if response!="":
+                    if response!="" or response=="":
                         # Extract urls
-                        # 1.Normal page
-                        soup = BeautifulSoup(response.text, 'html.parser')
-
                         temp_links=[]
-                        for link in soup.find_all('a'):
-                            unfiltered_href_link=link.get('href')
-                            temp_links.append(unfiltered_href_link)
 
-                        
-                        # 2. If page have frams or iframes...
-                        # .................................
-                        iframe_pdf_urls=get_iframe_pdf_urls_main(soup)
-                        # print(iframe_pdf_urls)
-                        if iframe_pdf_urls!="":
-                            for iframe_pdf_url in iframe_pdf_urls:
-                                temp_links.append(iframe_pdf_url)
+                        # if website allows requests library
+                        if response!="":
+                            selenium_type=False
+                            # 1.Normal page
+                            soup = BeautifulSoup(response.text, 'html.parser')
+                            for link in soup.find_all('a'):
+                                unfiltered_href_link=link.get('href')
+                                temp_links.append(unfiltered_href_link)
+                            
+                            # 2. If page have frams or iframes...
+                            iframe_pdf_urls=get_iframe_pdf_urls_main(soup)
+                            # print(iframe_pdf_urls)
+                            if iframe_pdf_urls!="":
+                                for iframe_pdf_url in iframe_pdf_urls:
+                                    temp_links.append(iframe_pdf_url)
+
+
+                        # if website does not allows requests library, so have to use selenium
+                        if response=="":
+                            selenium_type=True
+                            seleniumLinkList = get_valid_urls_main(self.current_domain_url)
+                            if len(seleniumLinkList)>0:
+                                for seleniumLink in seleniumLinkList:
+                                    temp_links.append(seleniumLink)
 
 
                         # drop duplicates in temp_links
@@ -313,9 +366,15 @@ class Spyder():
                                             pdf_domain=validate[1][1]
                                             pdf_title=validate[1][3]
                                             pdf_url=validate[1][2]
-                     
-                                                                
-                                            pdf_result = pdf_downloader_main(pdf_url, pdf_title)
+
+                                            # download using requests library
+                                            if selenium_type!=True:
+                                                pdf_result = pdf_downloader_main(pdf_url, pdf_title)
+
+                                            # download using selenium 
+                                            if selenium_type==True:
+                                                pdf_result = selenium_pdf_downloader_main(pdf_url)
+
                                             if pdf_result=="valid":
  
                                                 # Upload to google drive and return drive link/url
