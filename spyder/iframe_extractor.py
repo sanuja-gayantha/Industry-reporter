@@ -109,7 +109,7 @@ class Iframe_Extractor(webdriver.Chrome):
                 for link in raw_links:
                     l = link.get_attribute("href")
                     l_split=l.split("/")[-1].split(".")
-                    if len(l_split)>1 and l_split[-1]=="pdf":
+                    if len(l_split)>1 and l_split[-1].lower()=="pdf":
                         # print(l_split, "raw_link:{}".format(l))
                         pdf_links.append(l)
 

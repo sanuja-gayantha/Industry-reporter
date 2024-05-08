@@ -81,7 +81,8 @@ class Spyder():
 
         ext =[
             "mp4",
-            "mp3"
+            "mp3",
+            "zip"
         ]
 
         # https://
@@ -134,7 +135,7 @@ class Spyder():
 
         basic_split=url.split("/")[-1].split(".")
         if len(basic_split)>1:
-            if basic_split[-1]=="pdf":
+            if basic_split[-1].lower()=="pdf":
                 if symbol == "/":
                     report_link=self.domain+url
                 else:
@@ -162,7 +163,13 @@ class Spyder():
             response = requests.get(self.current_domain_url, 
                                         headers=self.headers,
                                         proxies={"http": proxy, "https": proxy}, timeout=self.proxy_timeout)
-            return response
+
+            # If we don't have access in to website, connection will be "close" otherwise it is "keep-alive"
+            # If connection is "close" return empty, then it will runs selenum browser.
+            if str(response.__dict__["headers"]["Connection"]) != "close":
+                return response
+            else:
+                return ""
 
         except Exception as e:
             return ""
@@ -369,7 +376,7 @@ class Spyder():
 
                                             # download using requests library
                                             if selenium_type!=True:
-                                                pdf_result = pdf_downloader_main(pdf_url, pdf_title)
+                                                pdf_result = pdf_downloader_main(pdf_url)
 
                                             # download using selenium 
                                             if selenium_type==True:
@@ -380,7 +387,7 @@ class Spyder():
                                                 # Upload to google drive and return drive link/url
                                                 print("Uploading...")      
                                                 apiDriveInstance = api.Api(api_scope=GOOGLE_DRIVE_SCOPES)
-                                                drive_response = apiDriveInstance.api_upload_to_drive(pdf_file_path = f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf", pdf_file_title=f"{pdf_title}")
+                                                drive_response = apiDriveInstance.api_upload_to_drive(pdf_file_path = f"{self.temp_pdfs_dir_path}/{pdf_url.split('/')[-1]}", pdf_file_title=f"{pdf_title}")
                                                 pdf_id=drive_response[1]
 
                                                 # create api instance
@@ -391,8 +398,8 @@ class Spyder():
                                                 # print(data)
                                                 apiInstance.api_append_spreadsheet(data)
 
-                                                if os.path.exists(f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf"):
-                                                    os.remove(f"{self.temp_pdfs_dir_path}/{pdf_title}.pdf")
+                                                if os.path.exists(f"{self.temp_pdfs_dir_path}/{pdf_url.split('/')[-1]}"):
+                                                    os.remove(f"{self.temp_pdfs_dir_path}/{pdf_url.split('/')[-1]}")
 
                                                 # mark pdf upload ststus as "uploaded" 
                                                 with database.Database() as db:

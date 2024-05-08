@@ -13,10 +13,9 @@ from .constants import IP_CHECKING_URL, CONNECTIONS, RESPONSE_ITERATIONS_PROXY
 
 class Pdf_Downloader():
 
-    def __init__(self, pdf_url, pdf_title):
+    def __init__(self, pdf_url):
         self.proxies_list=self.read_json_file(os.path.join(os.getcwd(), './rotatingProxy/proxy_list.json'))
         self.pdf_download_url=pdf_url
-        self.pdf_title=pdf_title
         self.proxy_timeout = 15
         self.headers = self.read_json_file(os.path.join(os.getcwd(), 'headers.json'))
         self.temp_pdfs_dir_path= os.path.join(os.getcwd(), './spyder/temp_pdfs')
@@ -92,7 +91,7 @@ class Pdf_Downloader():
 
         if result=="valid":
             print(f"[*] Downloading {self.pdf_download_url} ...")
-            with open(f"{self.temp_pdfs_dir_path}/{self.pdf_title}.pdf", "wb") as fd:
+            with open(f"{self.temp_pdfs_dir_path}/{self.pdf_download_url.split('/')[-1]}", "wb") as fd:
                 fd.write(response.content)
 
             # file_size = 0
@@ -104,8 +103,8 @@ class Pdf_Downloader():
         return result
 
         
-def pdf_downloader_main(pdf_url, pdf_title):
-    pdfInstance = Pdf_Downloader(pdf_url, pdf_title)
+def pdf_downloader_main(pdf_url):
+    pdfInstance = Pdf_Downloader(pdf_url)
     result = pdfInstance.download_pdf()
     return result
 
