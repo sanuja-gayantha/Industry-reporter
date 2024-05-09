@@ -82,7 +82,13 @@ class Spyder():
         ext =[
             "mp4",
             "mp3",
-            "zip"
+            "zip",
+            "xlsx",
+            "jpg",
+            "png",
+            "jpeg",
+            "gif",
+            "aspx"
         ]
 
         # https://
@@ -206,8 +212,8 @@ class Spyder():
         # Call Api for to get domains
         apiInstance = api.Api(api_scope=GOOGLE_SHEET_SCOPES)
         domains_data=apiInstance.api_read_domains_from_spreadsheet()
-        self.domains = domains_data
-        # self.domains = ["https://www.npci.org.in/"]
+        # self.domains = domains_data
+        self.domains = ["https://www.npci.org.in/"]
         # print(domains_data)
         # self.domains = self.read_json_file(self.domains_path)
 

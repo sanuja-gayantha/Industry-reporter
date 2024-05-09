@@ -6,6 +6,7 @@ import random
 import time
 import shutil
 
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -52,8 +53,18 @@ def download_pdf_to_custom_path(download_url):
             source = f"{currect_dir}/{download_url.split('/')[-1]}"
             destination = f"{os.path.join(os.getcwd(), './spyder/temp_pdfs')}"
             shutil.move(source, destination)
-
             result="valid"
+
+
+        # if .pdf's exists in root move thenm in to temp_pdfs folder
+        files = [f for f in os.listdir('.') if os.path.isfile(f) and f.endswith('.pdf')]
+        if len(files)>0:
+            for file in files:
+                source = f"{os.getcwd()}/{file}"
+                destination = f"{os.path.join(os.getcwd(), './spyder/temp_pdfs')}"
+                shutil.move(source, destination)
+                result="valid"
+
 
     except Exception as e:
         print(e)
