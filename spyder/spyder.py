@@ -124,7 +124,12 @@ class Spyder():
             countries_url_identifier=url.split("/")
             if not set(countries_url_identifier).isdisjoint(set(filter_words)):
                 # print("Duplicates found.")
-                return ["invalid", 0]           
+                return ["invalid", 0]   
+                
+            ext_url_identifier=url.split("/")[-1].split(".")[-1]
+            if not set(ext_url_identifier).isdisjoint(set(ext)):
+                # print("Duplicates found.")
+                return ["invalid", 0]               
 
             is_pdf=self.validate_pdf(url, "/") 
             
@@ -212,8 +217,8 @@ class Spyder():
         # Call Api for to get domains
         apiInstance = api.Api(api_scope=GOOGLE_SHEET_SCOPES)
         domains_data=apiInstance.api_read_domains_from_spreadsheet()
-        # self.domains = domains_data
-        self.domains = ["https://www.npci.org.in/"]
+        self.domains = domains_data
+        # self.domains = ["https://www.npci.org.in/"]
         # print(domains_data)
         # self.domains = self.read_json_file(self.domains_path)
 
