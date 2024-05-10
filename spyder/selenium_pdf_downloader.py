@@ -41,6 +41,7 @@ def download_pdf_to_custom_path(download_url):
             items = driver.execute_script(download_items_script)
 
         if items[0]["state"] == 2:
+            # print(items[0])
             time.sleep(2)
         else:
             # The download did not complete successfully.
@@ -49,32 +50,40 @@ def download_pdf_to_custom_path(download_url):
         time.sleep(1)
         driver.quit()
 
-        if os.path.exists(f"{currect_dir}/{download_url.split('/')[-1]}"):
-            source = f"{currect_dir}/{download_url.split('/')[-1]}"
+        if os.path.exists(f"{currect_dir}/{items[0]['fileName']}"):
+            source = f"{currect_dir}/{items[0]['fileName']}"
             destination = f"{os.path.join(os.getcwd(), './spyder/temp_pdfs')}"
             shutil.move(source, destination)
+
+            old_name = f"{os.path.join(os.getcwd(), './spyder/temp_pdfs/', items[0]['fileName'])}"
+            new_name = f"{os.path.join(os.getcwd(), './spyder/temp_pdfs', download_url.split('/')[-1])}"
+            os.rename(old_name, new_name)
+
             result="valid"
+            return result
 
 
-        # if .pdf's exists in root move thenm in to temp_pdfs folder
-        files = [f for f in os.listdir('.') if os.path.isfile(f) and f.endswith('.pdf')]
-        if len(files)>0:
-            for file in files:
-                source = f"{os.getcwd()}/{file}"
-                destination = f"{os.path.join(os.getcwd(), './spyder/temp_pdfs')}"
-                shutil.move(source, destination)
-                result="valid"
+        # # if .pdf's exists in root move thenm in to temp_pdfs folder
+        # files = [f for f in os.listdir('.') if os.path.isfile(f) and f.endswith('.pdf')]
+        # if len(files)>0:
+        #     for file in files:
+        #         source = f"{os.getcwd()}/{file}"
+        #         destination = f"{os.path.join(os.getcwd(), './spyder/temp_pdfs')}"
+        #         shutil.move(source, destination)
+                
+        #     result="valid"
+        #     return result
 
 
     except Exception as e:
         print(e)
-        pass
     
     return result
 
 
 def selenium_pdf_downloader_main(pdf_url):
-    return download_pdf_to_custom_path(pdf_url) 
+    result = download_pdf_to_custom_path(pdf_url) 
+    return result
 
 
 

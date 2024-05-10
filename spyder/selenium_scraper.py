@@ -20,7 +20,7 @@ class Selenium_Scraper(webdriver.Chrome):
         self.iframe_src:any
 
         options = webdriver.ChromeOptions()
-        options.add_argument("--headless=new")
+        # options.add_argument("--headless=new")
         super(Selenium_Scraper, self).__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
 
     def __enter__(self):
