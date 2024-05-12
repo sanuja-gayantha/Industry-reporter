@@ -90,10 +90,19 @@ class Spyder():
             "gif",
             "aspx"
         ]
+        countries_url_identifier=url.split("/")
+        ext_url_identifier=url.split("/")[-1].split(".")[-1]
+
+        if not set(countries_url_identifier).isdisjoint(set(filter_words)):
+            # print("Duplicates found.")
+            return ["invalid", 0]
+
+        elif not set(ext_url_identifier).isdisjoint(set(ext)):
+            # print("Duplicates found.")
+            return ["invalid", 0]
 
         # https://
-        if url.split(":")[0]=="https" or url.split(":")[0]=="http":
-
+        elif url.split(":")[0]=="https" or url.split(":")[0]=="http":
             # is it a pdf
             is_pdf=self.validate_pdf(url, "https") 
             if is_pdf!="":
@@ -106,30 +115,10 @@ class Spyder():
             if current_url_identifier!=url_identifier:
                 return ["invalid", 0]
 
-            countries_url_identifier=url.split("/")
-            if not set(countries_url_identifier).isdisjoint(set(filter_words)):
-                # print("Duplicates found.")
-                return ["invalid", 0]
-
-            ext_url_identifier=url.split("/")[-1].split(".")[-1]
-            if not set(ext_url_identifier).isdisjoint(set(ext)):
-                # print("Duplicates found.")
-                return ["invalid", 0]
-
             return ["valid_url_https", url]
 
         # /
-        elif url.split("/")[0]=="":
-
-            countries_url_identifier=url.split("/")
-            if not set(countries_url_identifier).isdisjoint(set(filter_words)):
-                # print("Duplicates found.")
-                return ["invalid", 0]   
-                
-            ext_url_identifier=url.split("/")[-1].split(".")[-1]
-            if not set(ext_url_identifier).isdisjoint(set(ext)):
-                # print("Duplicates found.")
-                return ["invalid", 0]               
+        elif url.split("/")[0]=="":              
 
             is_pdf=self.validate_pdf(url, "/") 
             
