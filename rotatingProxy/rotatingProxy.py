@@ -103,7 +103,7 @@ class RotatingProxy():
         temp_results=[]
         for result in results:
             if result != "":
-                print(result)
+                # print(result)
                 temp_results.append(result)
 
         if len(temp_results)<25:
@@ -115,7 +115,7 @@ class RotatingProxy():
                     if count==10:
                         break
 
-        print(temp_results)
+        # print(temp_results)
 
         with open(self.proxies_path, 'w') as file:
             json.dump(temp_results, file, indent=4)
