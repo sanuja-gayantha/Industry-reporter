@@ -110,12 +110,12 @@ class RotatingProxy():
             old_proxies = self.read_json_file(self.proxies_path)
             if len(old_proxies)>0:
                 for count, old_proxie in enumerate(old_proxies):
-                    print(count, old_proxie)
+                    # print(count, old_proxie)
                     temp_results.append(old_proxie)
                     if count==10:
                         break
 
-        # print(temp_results)
+        print(temp_results)
 
         with open(self.proxies_path, 'w') as file:
             json.dump(temp_results, file, indent=4)
